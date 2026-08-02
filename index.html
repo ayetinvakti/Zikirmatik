@@ -2,19 +2,40 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
     <title>Zikirmatik - Ayetin Vakti</title>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        * { 
+            box-sizing: border-box; 
+            margin: 0; 
+            padding: 0; 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
+            /* Mobilde dokunmatik zoom yapmayı engellemek için garanti yöntem */
+            touch-action: manipulation; 
+        }
         body { background-color: #d2dcdd; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
         .card { background: #ffffff; width: 100%; max-width: 380px; padding: 30px 20px; border-radius: 28px; box-shadow: 0 10px 25px rgba(0,0,0,0.08); text-align: center; }
         .brand { font-size: 14px; text-transform: uppercase; letter-spacing: 2px; color: #666; margin-bottom: 5px; font-weight: 600; }
         .title { font-size: 22px; color: #2d3748; margin-bottom: 25px; font-weight: 700; }
         .counter-box { background: #f1f5f9; border-radius: 20px; padding: 30px 10px; margin-bottom: 25px; border: 1px solid #e2e8f0; }
         .count { font-size: 64px; font-weight: 800; color: #1e293b; font-mono: monospace; }
-        .btn-tap { width: 100%; padding: 25px; font-size: 20px; font-weight: 700; color: white; background: #2f3e46; border: none; border-radius: 18px; cursor: pointer; transition: transform 0.1s; box-shadow: 0 4px 12px rgba(47, 62, 70, 0.3); }
+        .btn-tap { 
+            width: 100%; 
+            padding: 25px; 
+            font-size: 20px; 
+            font-weight: 700; 
+            color: white; 
+            background: #2f3e46; 
+            border: none; 
+            border-radius: 18px; 
+            cursor: pointer; 
+            transition: transform 0.1s; 
+            box-shadow: 0 4px 12px rgba(47, 62, 70, 0.3);
+            /* Butona hızlı dokunulduğunda vurgu yapmasını kapatır */
+            -webkit-tap-highlight-color: transparent;
+        }
         .btn-tap:active { transform: scale(0.96); background: #3a4f59; }
-        .btn-reset { margin-top: 15px; background: transparent; border: none; color: #94a3b8; font-size: 13px; cursor: pointer; text-decoration: underline; }
+        .btn-reset { margin-top: 15px; background: transparent; border: none; color: #94a3b8; font-size: 13px; cursor: pointer; text-decoration: underline; -webkit-tap-highlight-color: transparent;}
     </style>
 </head>
 <body>
