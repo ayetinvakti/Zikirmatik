@@ -2,117 +2,240 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
-    <title>Zikirmatik - Ayetin Vakti</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zikirmatik | Ayetin Vakti</title>
     <style>
-        * { 
-            box-sizing: border-box; 
-            margin: 0; 
-            padding: 0; 
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
-            /* Mobilde dokunmatik zoom yapmayı engellemek için */
-            touch-action: manipulation; 
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --accent-color: #10b981;
+            --text-color: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-color: #334155;
         }
-        body { background-color: #d2dcdd; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
-        .card { background: #ffffff; width: 100%; max-width: 380px; padding: 30px 20px; border-radius: 28px; box-shadow: 0 10px 25px rgba(0,0,0,0.08); text-align: center; }
-        .brand { font-size: 14px; text-transform: uppercase; letter-spacing: 2px; color: #666; margin-bottom: 5px; font-weight: 600; }
-        .title { font-size: 22px; color: #2d3748; margin-bottom: 25px; font-weight: 700; }
-        .counter-box { background: #f1f5f9; border-radius: 20px; padding: 30px 10px; margin-bottom: 25px; border: 1px solid #e2e8f0; }
-        .count { font-size: 64px; font-weight: 800; color: #1e293b; font-mono: monospace; }
-        .btn-tap { 
-            width: 100%; 
-            padding: 25px; 
-            font-size: 20px; 
-            font-weight: 700; 
-            color: white; 
-            background: #2f3e46; 
-            border: none; 
-            border-radius: 18px; 
-            cursor: pointer; 
-            transition: transform 0.1s; 
-            box-shadow: 0 4px 12px rgba(47, 62, 70, 0.3);
-            /* Butona hızlı dokunulduğunda mavi vurgu yapmasını kapatır */
-            -webkit-tap-highlight-color: transparent;
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
         }
-        .btn-tap:active { transform: scale(0.96); background: #3a4f59; }
-        .btn-reset { margin-top: 15px; background: transparent; border: none; color: #94a3b8; font-size: 13px; cursor: pointer; text-decoration: underline; -webkit-tap-highlight-color: transparent;}
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 400px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            color: var(--accent-color);
+            margin-bottom: 4px;
+        }
+
+        .header p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        /* Dijital Ekran */
+        .display-card {
+            background-color: var(--card-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 20px;
+            width: 100%;
+            padding: 24px;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+            margin-bottom: 24px;
+            position: relative;
+        }
+
+        .counter-value {
+            font-size: 4.5rem;
+            font-weight: 800;
+            color: var(--accent-color);
+            font-family: 'Courier New', Courier, monospace;
+            letter-spacing: 2px;
+        }
+
+        .target-info {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: 8px;
+        }
+
+        /* Ana Tıklama Alanı / Buton */
+        .click-area {
+            width: 220px;
+            height: 220px;
+            border-radius: 50%;
+            background: linear-gradient(145deg, #10b981, #047857);
+            box-shadow: 0 10px 30px rgba(16, 185, 129, 0.4),
+                        inset 0 4px 6px rgba(255, 255, 255, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: transform 0.05s ease, box-shadow 0.05s ease;
+            margin-bottom: 24px;
+        }
+
+        .click-area:active {
+            transform: scale(0.95);
+            box-shadow: 0 5px 15px rgba(16, 185, 129, 0.2);
+        }
+
+        .click-label {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #0f172a;
+            letter-spacing: 1px;
+        }
+
+        /* Kontrol Butonları */
+        .controls {
+            display: flex;
+            gap: 12px;
+            width: 100%;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 12px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .btn:hover {
+            background-color: #334155;
+        }
+
+        .footer {
+            margin-top: 24px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
     </style>
 </head>
 <body>
-    <div class="card">
-        <div class="brand">Ayetin Vakti</div>
-        <div class="title">Dijital Zikirmatik</div>
-        <div class="counter-box">
-            <div class="count" id="counter">0</div>
-        </div>
-        <button class="btn-tap" onclick="addCount()">ÇEK (ZİKİR)</button>
-        <button class="btn-reset" onclick="resetCount()">Sayacı Sıfırla</button>
+
+<div class="container">
+    <div class="header">
+        <h1>Zikirmatik</h1>
+        <p>Ayetin Vakti</p>
     </div>
 
-    <script>
-        let count = localStorage.getItem('ayetinvakti_zikir') ? parseInt(localStorage.getItem('ayetinvakti_zikir')) : 0;
+    <!-- Dijital Sayaç Ekrana -->
+    <div class="display-card">
+        <div class="counter-value" id="counter">0</div>
+        <div class="target-info" id="target-text">Hedef: 33 / 66 / 99</div>
+    </div>
+
+    <!-- Büyük Dokunma Alanı -->
+    <div class="click-area" onclick="increment()">
+        <span class="click-label">ZİKİR ÇEK</span>
+    </div>
+
+    <!-- Sıfırla Butonu -->
+    <div class="controls">
+        <button class="btn" onclick="resetCounter()">🔄 Sıfırla</button>
+    </div>
+
+    <div class="footer">
+        Titreşim & Ses Destekli Dijital Tesbih
+    </div>
+</div>
+
+<script>
+    let count = parseInt(localStorage.getItem('zikir_count')) || 0;
+    let audioCtx = null;
+
+    // Sayfa Açıldığında Kayıtlı Sayıyı Getir
+    document.getElementById('counter').innerText = count;
+
+    // Web Audio API ile Tatlı Ses Üretici
+    function playClickSound(freq = 600, duration = 0.05) {
+        try {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+            gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start();
+            osc.stop(audioCtx.currentTime + duration);
+        } catch (e) {
+            console.log("Ses çalınamadı:", e);
+        }
+    }
+
+    // Sayı Artırma Fonksiyonu
+    function increment() {
+        count++;
         document.getElementById('counter').innerText = count;
+        localStorage.setItem('zikir_count', count);
 
-        // Ses Motoru (Web Audio API)
-        let audioCtx = null;
-
-        function playClickSound() {
-            try {
-                // AudioContext'i kullanıcı butona ilk bastığında başlatıyoruz (Tarayıcı kısıtlamalarını aşmak için)
-                if (!audioCtx) {
-                    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                }
-                if (audioCtx.state === 'suspended') {
-                    audioCtx.resume();
-                }
-
-                const osc = audioCtx.createOscillator();
-                const gain = audioCtx.createGain();
-
-                osc.type = 'sine';
-                // Tok ve mekanik bir klik tonu (600 Hz)
-                osc.frequency.setValueAtTime(600, audioCtx.currentTime); 
-
-                // Çok kısa ve hızlı sönümlenen ses profili (0.03 saniye)
-                gain.gain.setValueAtTime(0.4, audioCtx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.03);
-
-                osc.connect(gain);
-                gain.connect(audioCtx.destination);
-
-                osc.start();
-                osc.stop(audioCtx.currentTime + 0.03);
-            } catch (e) {
-                console.log("Ses çalınamadı:", e);
+        // 33, 66, 99 veya 100'ün katlarına ulaşıldı mı?
+        if (count > 0 && count % 33 === 0) {
+            // Hedef Noktası: Uzun Ritimli Titreşim ve Özel Başarı Tonal Sesi
+            if (navigator.vibrate) {
+                navigator.vibrate([100, 50, 100, 50, 150]); 
             }
+            playClickSound(880, 0.25); // Daha yüksek ve uzun ton
+        } else {
+            // Normal Tıklama: Çok Hafif Titreşim ve Tıklama Sesi
+            if (navigator.vibrate) {
+                navigator.vibrate(35); // Kısacık his
+            }
+            playClickSound(500, 0.04);
         }
+    }
 
-        function addCount() {
-            count++;
+    // Sıfırlama
+    function resetCounter() {
+        if (count === 0) return;
+        if (confirm("Sayacı sıfırlamak istediğinize emin misiniz?")) {
+            count = 0;
             document.getElementById('counter').innerText = count;
-            localStorage.setItem('ayetinvakti_zikir', count);
-            
-            // Klik Sesi Çal
-            playClickSound();
-
-            // Titreşim (Android ve destekleyen cihazlarda 40ms)
-            if ("vibrate" in navigator) {
-                navigator.vibrate(40);
-            }
+            localStorage.setItem('zikir_count', count);
+            if (navigator.vibrate) navigator.vibrate([50, 50, 50]);
         }
+    }
+</script>
 
-        function resetCount() {
-            if (confirm("Sayacı sıfırlamak istediğinize emin misiniz?")) {
-                count = 0;
-                document.getElementById('counter').innerText = count;
-                localStorage.setItem('ayetinvakti_zikir', count);
-                
-                // Sıfırlamada da küçük bir titreşim geri bildirimi
-                if ("vibrate" in navigator) {
-                    navigator.vibrate([30, 50, 30]);
-                }
-            }
-        }
-    </script>
 </body>
 </html>
