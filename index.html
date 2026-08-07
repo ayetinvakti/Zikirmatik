@@ -127,10 +127,11 @@
             border: 2px solid var(--border-color);
             border-radius: 20px;
             width: 100%;
-            padding: 28px 24px;
+            padding: 24px;
             text-align: center;
             box-shadow: var(--shadow);
             margin-bottom: 24px;
+            position: relative;
         }
 
         .counter-value {
@@ -139,6 +140,32 @@
             color: var(--accent-color);
             font-family: 'Courier New', Courier, monospace;
             letter-spacing: 2px;
+        }
+
+        .target-info {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-top: 8px;
+            font-weight: 500;
+        }
+
+        /* Hedefe Ulaşıldı Bildirim Kutusu */
+        .goal-alert {
+            margin-top: 10px;
+            background-color: rgba(16, 185, 129, 0.15);
+            border: 1px solid var(--accent-color);
+            color: var(--accent-color);
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-4px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         /* Ana Tıklama Alanı / Buton */
@@ -311,6 +338,8 @@
     <!-- Dijital Sayaç Ekranı -->
     <div class="display-card">
         <div class="counter-value" id="counter">0</div>
+        <div class="target-info" id="target-info-text">Hedef: 33 (Kalan: 33)</div>
+        <div class="goal-alert" id="goalAlert">🎉 Hedefe Ulaşıldı!</div>
     </div>
 
     <!-- Dokunma Alanı -->
@@ -354,6 +383,9 @@
 
     const targetModal = document.getElementById('targetModal');
     const customInput = document.getElementById('customTargetInput');
+    const counterEl = document.getElementById('counter');
+    const targetInfoEl = document.getElementById('target-info-text');
+    const goalAlertEl = document.getElementById('goalAlert');
 
     // --- TEMA YÖNETİMİ ---
     function initTheme() {
@@ -371,11 +403,11 @@
         const btn = document.getElementById('theme-btn');
         if (theme === 'light') {
             document.documentElement.setAttribute('data-theme', 'light');
-            btn.innerHTML = '🌙 Gece';
+            btn.innerHTML = '☀️ Gündüz'; // Gündüz modundayken Gündüz yazar, tıklayınca Geceye geçer
             localStorage.setItem('theme', 'light');
         } else {
             document.documentElement.removeAttribute('data-theme');
-            btn.innerHTML = '☀️ Gündüz';
+            btn.innerHTML = '🌙 Gece'; // Gece modundayken Gece yazar, tıklayınca Gündüze geçer
             localStorage.setItem('theme', 'dark');
         }
     }
@@ -404,6 +436,23 @@
         }
     }
 
+    // --- GÖRÜNÜM & HESAPLAMA GÜNCELLEME ---
+    function updateDisplay() {
+        counterEl.innerText = count;
+        
+        // Mod alarak döngüsel kalan hesaplama (Örn: 33'lük hedefe göre 35. zikirde kalan 31 olur ya da sıfırdan başlar)
+        let remainder = target - (count % target);
+        if (remainder === target) remainder = 0; // Tam hedefe ulaşıldığında kalan 0 görünür
+        
+        targetInfoEl.innerText = `Hedef: ${target} (Kalan: ${remainder})`;
+
+        if (count > 0 && count % target === 0) {
+            goalAlertEl.style.display = 'block';
+        } else {
+            goalAlertEl.style.display = 'none';
+        }
+    }
+
     // --- HEDEF YÖNETİMİ ---
     function openTargetModal() {
         targetModal.style.display = 'flex';
@@ -417,6 +466,7 @@
 
     function closeTargetModal() {
         targetModal.style.display = 'none';
+        updateDisplay();
     }
 
     function closeTargetModalOutside(event) {
@@ -430,6 +480,7 @@
         localStorage.setItem('zikir_target', target);
         customInput.value = '';
         updateActiveButtonStates();
+        updateDisplay();
         closeTargetModal();
     }
 
@@ -439,6 +490,7 @@
             target = num;
             localStorage.setItem('zikir_target', target);
             updateActiveButtonStates();
+            updateDisplay();
         }
     }
 
@@ -458,10 +510,9 @@
     // --- SAYAÇ İŞLEMLERİ ---
     function increment() {
         count++;
-        document.getElementById('counter').innerText = count;
         localStorage.setItem('zikir_count', count);
 
-        // Seçilen hedefe ulaşıldığında özel titreşim ve ses çalma
+        // Hedefe ulaşıldığında özel ses ve uzun titreşim
         if (target > 0 && count % target === 0) {
             if (navigator.vibrate) {
                 navigator.vibrate([100, 50, 100, 50, 150]); 
@@ -473,24 +524,26 @@
             }
             playClickSound(500, 0.04);
         }
+
+        updateDisplay();
     }
 
     function resetCounter() {
         if (count === 0) return;
         if (confirm("Sayacı sıfırlamak istediğinize emin misiniz?")) {
             count = 0;
-            document.getElementById('counter').innerText = count;
             localStorage.setItem('zikir_count', count);
             if (navigator.vibrate) navigator.vibrate([50, 50, 50]);
+            updateDisplay();
         }
     }
 
     // Başlangıç Kurulumu
     window.onload = () => {
         initTheme();
-        document.getElementById('counter').innerText = count;
         target = parseInt(localStorage.getItem('zikir_target')) || 33;
         updateActiveButtonStates();
+        updateDisplay();
     };
 </script>
 
