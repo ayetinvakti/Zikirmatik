@@ -127,7 +127,7 @@
             border: 2px solid var(--border-color);
             border-radius: 20px;
             width: 100%;
-            padding: 24px;
+            padding: 28px 24px;
             text-align: center;
             box-shadow: var(--shadow);
             margin-bottom: 24px;
@@ -139,12 +139,6 @@
             color: var(--accent-color);
             font-family: 'Courier New', Courier, monospace;
             letter-spacing: 2px;
-        }
-
-        .target-info {
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            margin-top: 8px;
         }
 
         /* Ana Tıklama Alanı / Buton */
@@ -194,10 +188,106 @@
             font-size: 0.9rem;
             cursor: pointer;
             touch-action: manipulation;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
         }
 
         .btn:hover {
             background-color: var(--btn-hover);
+        }
+
+        /* Hedef Seçme Modalı */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            z-index: 100;
+        }
+
+        .modal-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 24px;
+            width: 100%;
+            max-width: 320px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            box-shadow: var(--shadow);
+        }
+
+        .modal-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            text-align: center;
+            color: var(--text-color);
+        }
+
+        .target-options {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .target-opt-btn {
+            background-color: var(--bg-color);
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            padding: 12px;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .target-opt-btn.active {
+            background-color: var(--accent-color);
+            border-color: var(--accent-color);
+            color: #fff;
+        }
+
+        .custom-target-box {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .custom-target-box label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .custom-input {
+            width: 100%;
+            padding: 10px;
+            border-radius: 10px;
+            background-color: var(--bg-color);
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            font-size: 1rem;
+            outline: none;
+            text-align: center;
+        }
+
+        .modal-close-btn {
+            background-color: var(--accent-color);
+            color: #fff;
+            border: none;
+            padding: 12px;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 4px;
         }
 
         .footer {
@@ -221,7 +311,6 @@
     <!-- Dijital Sayaç Ekranı -->
     <div class="display-card">
         <div class="counter-value" id="counter">0</div>
-        <div class="target-info" id="target-text">Hedef: 33 / 66 / 99</div>
     </div>
 
     <!-- Dokunma Alanı -->
@@ -232,6 +321,7 @@
     <!-- Kontrol Butonları -->
     <div class="controls">
         <button class="btn" onclick="resetCounter()">🔄 Sıfırla</button>
+        <button class="btn" onclick="openTargetModal()">🎯 Hedef Seç</button>
     </div>
 
     <div class="footer">
@@ -239,9 +329,31 @@
     </div>
 </div>
 
+<!-- Hedef Seçme Modal Penceresi -->
+<div class="modal-overlay" id="targetModal" onclick="closeTargetModalOutside(event)">
+    <div class="modal-card">
+        <div class="modal-title">Hedef Seçiniz</div>
+        <div class="target-options">
+            <button class="target-opt-btn" onclick="setTarget(33)" id="btn33">33</button>
+            <button class="target-opt-btn" onclick="setTarget(66)" id="btn66">66</button>
+            <button class="target-opt-btn" onclick="setTarget(99)" id="btn99">99</button>
+            <button class="target-opt-btn" onclick="setTarget(100)" id="btn100">100</button>
+        </div>
+        <div class="custom-target-box">
+            <label for="customTargetInput">Özel Hedef Yazın:</label>
+            <input type="number" id="customTargetInput" class="custom-input" placeholder="Örn: 500" oninput="setCustomTarget(this.value)">
+        </div>
+        <button class="modal-close-btn" onclick="closeTargetModal()">Tamam</button>
+    </div>
+</div>
+
 <script>
     let count = parseInt(localStorage.getItem('zikir_count')) || 0;
+    let target = parseInt(localStorage.getItem('zikir_target')) || 33;
     let audioCtx = null;
+
+    const targetModal = document.getElementById('targetModal');
+    const customInput = document.getElementById('customTargetInput');
 
     // --- TEMA YÖNETİMİ ---
     function initTheme() {
@@ -292,14 +404,65 @@
         }
     }
 
+    // --- HEDEF YÖNETİMİ ---
+    function openTargetModal() {
+        targetModal.style.display = 'flex';
+        if (![33, 66, 99, 100].includes(target)) {
+            customInput.value = target;
+        } else {
+            customInput.value = '';
+        }
+        updateActiveButtonStates();
+    }
+
+    function closeTargetModal() {
+        targetModal.style.display = 'none';
+    }
+
+    function closeTargetModalOutside(event) {
+        if (event.target === targetModal) {
+            closeTargetModal();
+        }
+    }
+
+    function setTarget(val) {
+        target = val;
+        localStorage.setItem('zikir_target', target);
+        customInput.value = '';
+        updateActiveButtonStates();
+        closeTargetModal();
+    }
+
+    function setCustomTarget(val) {
+        let num = parseInt(val);
+        if (num > 0) {
+            target = num;
+            localStorage.setItem('zikir_target', target);
+            updateActiveButtonStates();
+        }
+    }
+
+    function updateActiveButtonStates() {
+        [33, 66, 99, 100].forEach(num => {
+            const btn = document.getElementById(`btn${num}`);
+            if (btn) {
+                if (target === num) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            }
+        });
+    }
+
     // --- SAYAÇ İŞLEMLERİ ---
     function increment() {
         count++;
         document.getElementById('counter').innerText = count;
         localStorage.setItem('zikir_count', count);
 
-        // 33, 66, 99 veya 33'ün katlarında özel uyarı
-        if (count > 0 && count % 33 === 0) {
+        // Seçilen hedefe ulaşıldığında özel titreşim ve ses çalma
+        if (target > 0 && count % target === 0) {
             if (navigator.vibrate) {
                 navigator.vibrate([100, 50, 100, 50, 150]); 
             }
@@ -326,6 +489,8 @@
     window.onload = () => {
         initTheme();
         document.getElementById('counter').innerText = count;
+        target = parseInt(localStorage.getItem('zikir_target')) || 33;
+        updateActiveButtonStates();
     };
 </script>
 
