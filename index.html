@@ -307,6 +307,7 @@
         }
 
         .custom-target-box {
+            domain-flex: flex;
             display: flex;
             flex-direction: column;
             gap: 6px;
@@ -406,9 +407,10 @@
 
     // --- ANA SAYFAYA DÖNÜŞ FONKSİYONU ---
     function goHome() {
-        // Eğer site alt dizindeyse veya kök dizine gitmesi gerekiyorsa:
-        // Buraya ana sayfa adresini tırnak içine yazabilirsin (Örn: window.location.href = 'index.html'; veya '/')
-        window.location.href = 'index.html'; 
+        // Eğer ana sayfan farklı bir repodaysa, buraya tam adresini yazabilirsin.
+        // Örn: window.location.href = 'https://ayetinvakti.github.io/ana-sayfa-repo-adi/';
+        // Eğer her şey ayetinvakti.github.io çatısındaysa kök dizine yönlendirir:
+        window.location.href = '/'; 
     }
 
     // --- TEMA YÖNETİMİ ---
@@ -554,7 +556,7 @@
         let num = parseInt(val);
         if (num > 0) {
             target = num;
-            localStorage.setItem('zikir_target', target);
+            localStorage.setItem('zik_target', target);
             updateActiveButtonStates();
             updateDisplay();
         }
@@ -591,7 +593,7 @@
         if (count === 0) return;
         if (confirm("Sayacı sıfırlamak istediğinize emin misiniz?")) {
             count = 0;
-            localStorage.setItem('zikir_count', count);
+            localStorage.setItem('zik_count', count);
             updateDisplay();
         }
     }
