@@ -8,7 +8,6 @@
     <!-- Sosyal Medya & Mesajlaşma Önizleme Etiketleri -->
     <meta property="og:title" content="Zikirmatik | Ayetin Vakti">
     <meta property="og:description" content="Titreşim ve ses destekli, kullanımı kolay dijital tesbih.">
-    <meta property="og:image" content="https://ayetinvakti.github.io/kapak-resmi.jpg">
     <meta property="og:type" content="website">
 
     <!-- Tema Sıçramasını Önleyici Erken Betik -->
@@ -86,7 +85,7 @@
             flex-direction: column;
             align-items: center;
             position: relative;
-            margin-bottom: 24px;
+            margin-bottom: 20px;
             padding-top: 10px;
         }
 
@@ -127,7 +126,7 @@
             border: 2px solid var(--border-color);
             border-radius: 20px;
             width: 100%;
-            padding: 24px;
+            padding: 20px;
             text-align: center;
             box-shadow: var(--shadow);
             margin-bottom: 24px;
@@ -135,7 +134,7 @@
         }
 
         .counter-value {
-            font-size: 4.5rem;
+            font-size: 4rem;
             font-weight: 800;
             color: var(--accent-color);
             font-family: 'Courier New', Courier, monospace;
@@ -145,7 +144,7 @@
         .target-info {
             font-size: 0.9rem;
             color: var(--text-muted);
-            margin-top: 8px;
+            margin-top: 6px;
             font-weight: 500;
         }
 
@@ -168,10 +167,10 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Ana Tıklama Alanı / Buton (Gelişmiş Animasyonlu) */
+        /* Ana Tıklama Alanı / Dairesel Tesbih Alanı (Canlı Dokunma Efektli) */
         .click-area {
-            width: 210px;
-            height: 210px;
+            width: 220px;
+            height: 220px;
             border-radius: 50%;
             background: linear-gradient(145deg, var(--accent-color), var(--accent-hover));
             box-shadow: 0 12px 35px rgba(16, 185, 129, 0.4),
@@ -180,20 +179,20 @@
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            /* Akıcı ve yumuşak animasyon geçişi */
-            transition: transform 0.08s cubic-bezier(0.4, 0, 0.2, 1), 
-                        box-shadow 0.08s cubic-bezier(0.4, 0, 0.2, 1),
-                        filter 0.08s ease;
+            /* Canlı ve akıcı basılma hissi için özel geçiş */
+            transition: transform 0.06s cubic-bezier(0.4, 0, 0.2, 1), 
+                        box-shadow 0.06s cubic-bezier(0.4, 0, 0.2, 1),
+                        filter 0.06s ease;
             margin-bottom: 24px;
             touch-action: manipulation;
         }
 
-        /* Dokunulduğunda veya aktif sınıftayken oluşacak basılma efekti */
+        /* Dokunulduğunda veya tetiklendiğinde çalışan animasyon sınıfı */
         .click-area:active, .click-area.pressed {
-            transform: scale(0.91);
-            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25),
-                        inset 0 6px 12px rgba(0, 0, 0, 0.2);
-            filter: brightness(0.92);
+            transform: scale(0.89) rotate(-1deg);
+            box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3),
+                        inset 0 8px 15px rgba(0, 0, 0, 0.25);
+            filter: brightness(0.9);
         }
 
         .click-label {
@@ -201,7 +200,7 @@
             font-weight: 700;
             color: #ffffff;
             letter-spacing: 1px;
-            pointer-events: none; /* Yazının tıklamayı engellemesini önler */
+            pointer-events: none;
         }
 
         /* Kontrol Butonları */
@@ -349,7 +348,7 @@
         <div class="goal-alert" id="goalAlert">🎉 Hedefe Ulaşıldı!</div>
     </div>
 
-    <!-- Dokunma Alanı (Gelişmiş Dokunma Olayları ile) -->
+    <!-- Dokunma Alanı (Canlı Dokunma Efekti) -->
     <div class="click-area" id="clickArea" 
          ontouchstart="triggerPressEffect()" 
          onmousedown="triggerPressEffect()" 
@@ -423,8 +422,8 @@
         }
     }
 
-    // --- SES ÜRETİCİ (Web Audio API) ---
-    function playClickSound(freq = 600, duration = 0.05) {
+    // --- SES ÜRETİCİ (Güçlendirilmiş Yüksek Ses) ---
+    function playClickSound(freq = 650, duration = 0.06) {
         try {
             if (!audioCtx) {
                 audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -434,10 +433,13 @@
             }
             const osc = audioCtx.createOscillator();
             const gain = audioCtx.createGain();
-            osc.type = 'sine';
+            osc.type = 'triangle'; // Daha tok ve gür bir ses tonu
             osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-            gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+            
+            // Ses yüksekliğini artırdık (Gain değerini yükselttik)
+            gain.gain.setValueAtTime(0.25, audioCtx.currentTime);
             gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
+            
             osc.connect(gain);
             gain.connect(audioCtx.destination);
             osc.start();
@@ -452,7 +454,7 @@
         clickAreaEl.classList.add('pressed');
         setTimeout(() => {
             clickAreaEl.classList.remove('pressed');
-        }, 120); // 120 milisaniye sonra eski haline döner
+        }, 100);
     }
 
     // --- GÖRÜNÜM & HESAPLAMA GÜNCELLEME ---
@@ -533,7 +535,7 @@
         if (target > 0 && count % target === 0) {
             playClickSound(880, 0.25);
         } else {
-            playClickSound(500, 0.04);
+            playClickSound(650, 0.06);
         }
 
         updateDisplay();
