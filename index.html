@@ -5,12 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Zikirmatik | Ayetin Vakti</title>
     
-    <!-- Sosyal Medya & Mesajlaşma Önizleme Etiketleri -->
     <meta property="og:title" content="Zikirmatik | Ayetin Vakti">
     <meta property="og:description" content="Titreşim ve ses destekli, kullanımı kolay dijital tesbih.">
     <meta property="og:type" content="website">
 
-    <!-- Tema Sıçramasını Önleyici Erken Betik -->
     <script>
         (function() {
             const savedTheme = localStorage.getItem('theme');
@@ -347,8 +345,7 @@
 
 <div class="container">
     <div class="header">
-        <!-- Ana Sayfaya Döndüren Sadece Simgeli Geri Tuşu (href kısmına ana sayfa adresini yazabilirsin) -->
-        <a href="index.html" class="back-btn" title="Ana Sayfa">←</a>
+        <button class="back-btn" onclick="goHome()" title="Ana Sayfa">←</button>
         
         <button class="theme-toggle-btn" onclick="toggleTheme()" id="theme-btn">
             ☀️ Gündüz
@@ -357,14 +354,10 @@
         <p>Ayetin Vakti</p>
     </div>
 
-    <!-- Dairesel Tesbih ve Orta Buton Alanı -->
     <div class="tesbih-wrapper">
-        <!-- SVG Dairesel Boncuklar -->
         <svg class="tesbih-svg" viewBox="0 0 300 300" id="tesbihSvg">
-            <!-- Dinamik olarak JS ile oluşturulacak boncuklar -->
-        </svg>
+            </svg>
 
-        <!-- Canlı Dokunma Efektli Orta Buton -->
         <div class="click-area" id="clickArea" 
              ontouchstart="triggerPressEffect()" 
              onmousedown="triggerPressEffect()" 
@@ -375,14 +368,12 @@
         </div>
     </div>
 
-    <!-- Kontrol Butonları -->
     <div class="controls">
         <button class="btn" onclick="resetCounter()">🔄 Sıfırla</button>
         <button class="btn" onclick="openTargetModal()">🎯 Hedef Seç</button>
     </div>
 </div>
 
-<!-- Hedef Seçme Modal Penceresi -->
 <div class="modal-overlay" id="targetModal" onclick="closeTargetModalOutside(event)">
     <div class="modal-card">
         <div class="modal-title">Hedef Seçiniz</div>
@@ -412,6 +403,13 @@
     const remainderLabelEl = document.getElementById('remainderLabel');
     const clickAreaEl = document.getElementById('clickArea');
     const tesbihSvg = document.getElementById('tesbihSvg');
+
+    // --- ANA SAYFAYA DÖNÜŞ FONKSİYONU ---
+    function goHome() {
+        // Eğer site alt dizindeyse veya kök dizine gitmesi gerekiyorsa:
+        // Buraya ana sayfa adresini tırnak içine yazabilirsin (Örn: window.location.href = 'index.html'; veya '/')
+        window.location.href = 'index.html'; 
+    }
 
     // --- TEMA YÖNETİMİ ---
     function initTheme() {
