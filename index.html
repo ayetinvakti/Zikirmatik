@@ -1,14 +1,6 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Zikirmatik | Ayetin Vakti</title>
-    
-    <meta property="og:title" content="Zikirmatik | Ayetin Vakti">
-    <meta property="og:description" content="Titreşim ve ses destekli, kullanımı kolay dijital tesbih.">
-    <meta property="og:type" content="website">
-
     <script>
         (function() {
             const savedTheme = localStorage.getItem('theme');
@@ -17,6 +9,13 @@
             }
         })();
     </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Zikirmatik | Ayetin Vakti</title>
+    
+    <meta property="og:title" content="Zikirmatik | Ayetin Vakti">
+    <meta property="og:description" content="Titreşim ve ses destekli, kullanımı kolay dijital tesbih.">
+    <meta property="og:type" content="website">
 
     <style>
         /* Gece Teması (Varsayılan Koyu Mode) */
@@ -53,6 +52,7 @@
             box-sizing: border-box;
             margin: 0;
             padding: 0;
+            -webkit-tap-highlight-color: transparent;
             user-select: none;
             -webkit-user-select: none;
             transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
@@ -78,46 +78,25 @@
             align-items: center;
         }
 
-        /* Header & Üst Tuşlar Düzeni */
-        .header {
+        /* Navbar & Yuvarlak Buton Düzeni */
+        .navbar {
             width: 100%;
             display: flex;
-            flex-direction: column;
             align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
             position: relative;
-            margin-bottom: 25px;
-            padding-top: 5px;
         }
 
-        .theme-toggle-btn {
-            position: absolute;
-            right: 0;
-            top: 0;
+        .home-btn {
             background-color: var(--btn-bg);
             border: 1px solid var(--border-color);
             color: var(--text-color);
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        /* Sadece simgeden oluşan Geri Dönüş Tuşu */
-        .back-btn {
-            position: absolute;
-            left: 0;
-            top: 0;
-            background-color: var(--btn-bg);
-            border: 1px solid var(--border-color);
-            color: var(--text-color);
-            width: 36px;
-            height: 36px;
+            width: 38px;
+            height: 38px;
             border-radius: 50%;
-            font-size: 1rem;
+            font-size: 1.1rem;
+            font-weight: 600;
             cursor: pointer;
             display: flex;
             align-items: center;
@@ -125,14 +104,39 @@
             text-decoration: none;
         }
 
-        .back-btn:hover {
+        .home-btn:hover {
             background-color: var(--btn-hover);
+        }
+
+        .theme-icon-btn {
+            background-color: var(--btn-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            font-size: 1.1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .theme-icon-btn:hover {
+            background-color: var(--btn-hover);
+        }
+
+        .header {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 20px;
         }
 
         .header h1 {
             font-size: 1.8rem;
             color: var(--accent-color);
-            margin-top: 15px;
             margin-bottom: 2px;
             text-align: center;
         }
@@ -307,7 +311,6 @@
         }
 
         .custom-target-box {
-            domain-flex: flex;
             display: flex;
             flex-direction: column;
             gap: 6px;
@@ -345,12 +348,13 @@
 <body>
 
 <div class="container">
+    <!-- Üst Bar: Yazısız Geri Tuşu ve Yazısız Tema İkonu -->
+    <div class="navbar">
+        <a href="../" class="home-btn" title="Ana Sayfa">←</a>
+        <button class="theme-icon-btn" onclick="toggleTheme()" id="theme-btn" title="Tema Değiştir">☀️</button>
+    </div>
+
     <div class="header">
-        <button class="back-btn" onclick="goHome()" title="Ana Sayfa">←</button>
-        
-        <button class="theme-toggle-btn" onclick="toggleTheme()" id="theme-btn">
-            ☀️ Gündüz
-        </button>
         <h1>Zikirmatik</h1>
         <p>Ayetin Vakti</p>
     </div>
@@ -405,14 +409,6 @@
     const clickAreaEl = document.getElementById('clickArea');
     const tesbihSvg = document.getElementById('tesbihSvg');
 
-    // --- ANA SAYFAYA DÖNÜŞ FONKSİYONU ---
-    function goHome() {
-        // Eğer ana sayfan farklı bir repodaysa, buraya tam adresini yazabilirsin.
-        // Örn: window.location.href = 'https://ayetinvakti.github.io/ana-sayfa-repo-adi/';
-        // Eğer her şey ayetinvakti.github.io çatısındaysa kök dizine yönlendirir:
-        window.location.href = '/'; 
-    }
-
     // --- TEMA YÖNETİMİ ---
     function initTheme() {
         const savedTheme = localStorage.getItem('theme') || 'dark';
@@ -429,16 +425,16 @@
         const btn = document.getElementById('theme-btn');
         if (theme === 'light') {
             document.documentElement.setAttribute('data-theme', 'light');
-            btn.innerHTML = '☀️ Gündüz'; 
+            if (btn) btn.innerHTML = '🌙'; 
             localStorage.setItem('theme', 'light');
         } else {
             document.documentElement.removeAttribute('data-theme');
-            btn.innerHTML = '🌙 Gece'; 
+            if (btn) btn.innerHTML = '☀️'; 
             localStorage.setItem('theme', 'dark');
         }
     }
 
-    // --- SES ÜRETİCİ (Güçlendirilmiş Yüksek Ses) ---
+    // --- SES ÜRETİCİ ---
     function playClickSound(freq = 650, duration = 0.06) {
         try {
             if (!audioCtx) {
@@ -556,7 +552,7 @@
         let num = parseInt(val);
         if (num > 0) {
             target = num;
-            localStorage.setItem('zik_target', target);
+            localStorage.setItem('zikir_target', target);
             updateActiveButtonStates();
             updateDisplay();
         }
@@ -593,7 +589,7 @@
         if (count === 0) return;
         if (confirm("Sayacı sıfırlamak istediğinize emin misiniz?")) {
             count = 0;
-            localStorage.setItem('zik_count', count);
+            localStorage.setItem('zikir_count', count);
             updateDisplay();
         }
     }
