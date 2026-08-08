@@ -168,26 +168,32 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Ana Tıklama Alanı / Buton */
+        /* Ana Tıklama Alanı / Buton (Gelişmiş Animasyonlu) */
         .click-area {
             width: 210px;
             height: 210px;
             border-radius: 50%;
             background: linear-gradient(145deg, var(--accent-color), var(--accent-hover));
-            box-shadow: 0 10px 30px rgba(16, 185, 129, 0.35),
-                        inset 0 4px 6px rgba(255, 255, 255, 0.25);
+            box-shadow: 0 12px 35px rgba(16, 185, 129, 0.4),
+                        inset 0 4px 8px rgba(255, 255, 255, 0.3);
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            transition: transform 0.05s ease, box-shadow 0.05s ease;
+            /* Akıcı ve yumuşak animasyon geçişi */
+            transition: transform 0.08s cubic-bezier(0.4, 0, 0.2, 1), 
+                        box-shadow 0.08s cubic-bezier(0.4, 0, 0.2, 1),
+                        filter 0.08s ease;
             margin-bottom: 24px;
             touch-action: manipulation;
         }
 
-        .click-area:active {
-            transform: scale(0.94);
-            box-shadow: 0 5px 15px rgba(16, 185, 129, 0.2);
+        /* Dokunulduğunda veya aktif sınıftayken oluşacak basılma efekti */
+        .click-area:active, .click-area.pressed {
+            transform: scale(0.91);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25),
+                        inset 0 6px 12px rgba(0, 0, 0, 0.2);
+            filter: brightness(0.92);
         }
 
         .click-label {
@@ -195,6 +201,7 @@
             font-weight: 700;
             color: #ffffff;
             letter-spacing: 1px;
+            pointer-events: none; /* Yazının tıklamayı engellemesini önler */
         }
 
         /* Kontrol Butonları */
@@ -342,8 +349,11 @@
         <div class="goal-alert" id="goalAlert">🎉 Hedefe Ulaşıldı!</div>
     </div>
 
-    <!-- Dokunma Alanı -->
-    <div class="click-area" onclick="increment()">
+    <!-- Dokunma Alanı (Gelişmiş Dokunma Olayları ile) -->
+    <div class="click-area" id="clickArea" 
+         ontouchstart="triggerPressEffect()" 
+         onmousedown="triggerPressEffect()" 
+         onclick="increment()">
         <span class="click-label">ZİKİR ÇEK</span>
     </div>
 
@@ -354,7 +364,7 @@
     </div>
 
     <div class="footer">
-        Titreşim & Ses Destekli Dijital Tesbih
+        Ses Destekli Dijital Tesbih
     </div>
 </div>
 
@@ -386,6 +396,7 @@
     const counterEl = document.getElementById('counter');
     const targetInfoEl = document.getElementById('target-info-text');
     const goalAlertEl = document.getElementById('goalAlert');
+    const clickAreaEl = document.getElementById('clickArea');
 
     // --- TEMA YÖNETİMİ ---
     function initTheme() {
@@ -403,11 +414,11 @@
         const btn = document.getElementById('theme-btn');
         if (theme === 'light') {
             document.documentElement.setAttribute('data-theme', 'light');
-            btn.innerHTML = '☀️ Gündüz'; // Gündüz modundayken Gündüz yazar, tıklayınca Geceye geçer
+            btn.innerHTML = '☀️ Gündüz'; 
             localStorage.setItem('theme', 'light');
         } else {
             document.documentElement.removeAttribute('data-theme');
-            btn.innerHTML = '🌙 Gece'; // Gece modundayken Gece yazar, tıklayınca Gündüze geçer
+            btn.innerHTML = '🌙 Gece'; 
             localStorage.setItem('theme', 'dark');
         }
     }
@@ -436,13 +447,20 @@
         }
     }
 
+    // --- BUTON BASMA ANİMASYONU ---
+    function triggerPressEffect() {
+        clickAreaEl.classList.add('pressed');
+        setTimeout(() => {
+            clickAreaEl.classList.remove('pressed');
+        }, 120); // 120 milisaniye sonra eski haline döner
+    }
+
     // --- GÖRÜNÜM & HESAPLAMA GÜNCELLEME ---
     function updateDisplay() {
         counterEl.innerText = count;
         
-        // Mod alarak döngüsel kalan hesaplama (Örn: 33'lük hedefe göre 35. zikirde kalan 31 olur ya da sıfırdan başlar)
         let remainder = target - (count % target);
-        if (remainder === target) remainder = 0; // Tam hedefe ulaşıldığında kalan 0 görünür
+        if (remainder === target) remainder = 0; 
         
         targetInfoEl.innerText = `Hedef: ${target} (Kalan: ${remainder})`;
 
@@ -512,16 +530,9 @@
         count++;
         localStorage.setItem('zikir_count', count);
 
-        // Hedefe ulaşıldığında özel ses ve uzun titreşim
         if (target > 0 && count % target === 0) {
-            if (navigator.vibrate) {
-                navigator.vibrate([100, 50, 100, 50, 150]); 
-            }
             playClickSound(880, 0.25);
         } else {
-            if (navigator.vibrate) {
-                navigator.vibrate(35);
-            }
             playClickSound(500, 0.04);
         }
 
@@ -533,7 +544,6 @@
         if (confirm("Sayacı sıfırlamak istediğinize emin misiniz?")) {
             count = 0;
             localStorage.setItem('zikir_count', count);
-            if (navigator.vibrate) navigator.vibrate([50, 50, 50]);
             updateDisplay();
         }
     }
