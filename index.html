@@ -80,7 +80,7 @@
             align-items: center;
         }
 
-        /* Header & Tema Butonu Düzeni */
+        /* Header & Üst Tuşlar Düzeni */
         .header {
             width: 100%;
             display: flex;
@@ -106,6 +106,29 @@
             display: flex;
             align-items: center;
             gap: 6px;
+        }
+
+        /* Sadece simgeden oluşan Geri Dönüş Tuşu */
+        .back-btn {
+            position: absolute;
+            left: 0;
+            top: 0;
+            background-color: var(--btn-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            font-size: 1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+        }
+
+        .back-btn:hover {
+            background-color: var(--btn-hover);
         }
 
         .header h1 {
@@ -324,6 +347,9 @@
 
 <div class="container">
     <div class="header">
+        <!-- Ana Sayfaya Döndüren Sadece Simgeli Geri Tuşu (href kısmına ana sayfa adresini yazabilirsin) -->
+        <a href="index.html" class="back-btn" title="Ana Sayfa">←</a>
+        
         <button class="theme-toggle-btn" onclick="toggleTheme()" id="theme-btn">
             ☀️ Gündüz
         </button>
