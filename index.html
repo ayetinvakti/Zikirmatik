@@ -33,6 +33,7 @@
             --btn-bg: rgba(255, 255, 255, 0.05);
             --btn-hover: rgba(255, 255, 255, 0.1);
             --shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+            --bead-inactive: #475569;
         }
 
         /* Gündüz Teması (Açık Mode) */
@@ -47,6 +48,7 @@
             --btn-bg: #f1f5f9;
             --btn-hover: #e2e8f0;
             --shadow: 0 10px 25px rgba(0, 0, 0, 0.06);
+            --bead-inactive: #cbd5e1;
         }
 
         * {
@@ -67,7 +69,7 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 20px;
+            padding: 15px;
         }
 
         .container {
@@ -85,8 +87,8 @@
             flex-direction: column;
             align-items: center;
             position: relative;
-            margin-bottom: 20px;
-            padding-top: 10px;
+            margin-bottom: 15px;
+            padding-top: 5px;
         }
 
         .theme-toggle-btn {
@@ -107,100 +109,108 @@
         }
 
         .header h1 {
-            font-size: 1.8rem;
+            font-size: 1.6rem;
             color: var(--accent-color);
-            margin-top: 20px;
-            margin-bottom: 4px;
+            margin-top: 15px;
+            margin-bottom: 2px;
             text-align: center;
         }
 
         .header p {
             color: var(--text-muted);
-            font-size: 0.9rem;
-            text-align: center;
-        }
-
-        /* Dijital Ekran */
-        .display-card {
-            background-color: var(--card-bg);
-            border: 2px solid var(--border-color);
-            border-radius: 20px;
-            width: 100%;
-            padding: 20px;
-            text-align: center;
-            box-shadow: var(--shadow);
-            margin-bottom: 24px;
-            position: relative;
-        }
-
-        .counter-value {
-            font-size: 4rem;
-            font-weight: 800;
-            color: var(--accent-color);
-            font-family: 'Courier New', Courier, monospace;
-            letter-spacing: 2px;
-        }
-
-        .target-info {
-            font-size: 0.9rem;
-            color: var(--text-muted);
-            margin-top: 6px;
-            font-weight: 500;
-        }
-
-        /* Hedefe Ulaşıldı Bildirim Kutusu */
-        .goal-alert {
-            margin-top: 10px;
-            background-color: rgba(16, 185, 129, 0.15);
-            border: 1px solid var(--accent-color);
-            color: var(--accent-color);
-            padding: 6px 12px;
-            border-radius: 8px;
             font-size: 0.85rem;
-            font-weight: 700;
-            display: none;
-            animation: fadeIn 0.3s ease;
+            text-align: center;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-4px); }
-            to { opacity: 1; transform: translateY(0); }
+        /* Üst Duyuru / Reklam Alanı (Videodaki gibi) */
+        .banner-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            width: 100%;
+            padding: 12px;
+            text-align: center;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-color);
+            box-shadow: var(--shadow);
+            margin-bottom: 20px;
         }
 
-        /* Ana Tıklama Alanı / Dairesel Tesbih Alanı (Canlı Dokunma Efektli) */
-        .click-area {
-            width: 220px;
-            height: 220px;
-            border-radius: 50%;
-            background: linear-gradient(145deg, var(--accent-color), var(--accent-hover));
-            box-shadow: 0 12px 35px rgba(16, 185, 129, 0.4),
-                        inset 0 4px 8px rgba(255, 255, 255, 0.3);
+        /* Dairesel Tesbih ve Butonun Kapsayıcısı */
+        .tesbih-wrapper {
+            position: relative;
+            width: 300px;
+            height: 300px;
             display: flex;
             align-items: center;
             justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        /* Etraftaki Noktalı Dairesel Halkaca Ait SVG */
+        .tesbih-svg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            transform: rotate(-90deg); /* Üst noktadan (12 yönünden) başlatmak için */
+        }
+
+        .bead {
+            transition: fill 0.2s ease, r 0.2s ease;
+        }
+
+        /* Ana Tıklama Dairesi (Ortadaki Buton) */
+        .click-area {
+            width: 170px;
+            height: 170px;
+            border-radius: 50%;
+            background: linear-gradient(145deg, var(--card-bg), var(--bg-color));
+            border: 4px solid var(--accent-color);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
             cursor: pointer;
-            /* Canlı ve akıcı basılma hissi için özel geçiş */
             transition: transform 0.06s cubic-bezier(0.4, 0, 0.2, 1), 
                         box-shadow 0.06s cubic-bezier(0.4, 0, 0.2, 1),
                         filter 0.06s ease;
-            margin-bottom: 24px;
             touch-action: manipulation;
+            z-index: 2;
         }
 
-        /* Dokunulduğunda veya tetiklendiğinde çalışan animasyon sınıfı */
         .click-area:active, .click-area.pressed {
-            transform: scale(0.89) rotate(-1deg);
-            box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3),
-                        inset 0 8px 15px rgba(0, 0, 0, 0.25);
-            filter: brightness(0.9);
+            transform: scale(0.91);
+            box-shadow: 0 4px 10px rgba(16, 185, 129, 0.2);
+            filter: brightness(0.95);
         }
 
-        .click-label {
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: #ffffff;
-            letter-spacing: 1px;
-            pointer-events: none;
+        .counter-value {
+            font-size: 3.2rem;
+            font-weight: 800;
+            color: var(--text-color);
+            font-family: 'Courier New', Courier, monospace;
+            line-height: 1;
+            margin-bottom: 4px;
+        }
+
+        .counter-target-label {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--accent-color);
+            margin-bottom: 4px;
+        }
+
+        .sub-counter {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 4px;
         }
 
         /* Kontrol Butonları */
@@ -208,6 +218,7 @@
             display: flex;
             gap: 12px;
             width: 100%;
+            margin-bottom: 12px;
         }
 
         .btn {
@@ -225,10 +236,25 @@
             align-items: center;
             justify-content: center;
             gap: 6px;
+            box-shadow: var(--shadow);
         }
 
         .btn:hover {
             background-color: var(--btn-hover);
+        }
+
+        .full-btn {
+            width: 100%;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 12px;
+            color: var(--text-color);
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            box-shadow: var(--shadow);
+            text-align: center;
         }
 
         /* Hedef Seçme Modalı */
@@ -322,12 +348,6 @@
             cursor: pointer;
             margin-top: 4px;
         }
-
-        .footer {
-            margin-top: 24px;
-            font-size: 0.85rem;
-            color: var(--text-muted);
-        }
     </style>
 </head>
 <body>
@@ -341,19 +361,29 @@
         <p>Ayetin Vakti</p>
     </div>
 
-    <!-- Dijital Sayaç Ekranı -->
-    <div class="display-card">
-        <div class="counter-value" id="counter">0</div>
-        <div class="target-info" id="target-info-text">Hedef: 33 (Kalan: 33)</div>
-        <div class="goal-alert" id="goalAlert">🎉 Hedefe Ulaşıldı!</div>
+    <!-- Üst Banner (Videodaki Alan) -->
+    <div class="banner-card">
+        ✨ Özel Zikirlerin Sırrını Keşfedin ✨
     </div>
 
-    <!-- Dokunma Alanı (Canlı Dokunma Efekti) -->
-    <div class="click-area" id="clickArea" 
-         ontouchstart="triggerPressEffect()" 
-         onmousedown="triggerPressEffect()" 
-         onclick="increment()">
-        <span class="click-label">ZİKİR ÇEK</span>
+    <!-- Dairesel Tesbih ve Orta Buton Alanı -->
+    <div class="tesbih-wrapper">
+        <!-- SVG Dairesel Boncuklar -->
+        <svg class="tesbih-svg" viewBox="0 0 300 300" id="tesbihSvg">
+            <!-- Dinamik olarak JS ile oluşturulacak boncuklar buraya gelecek -->
+        </svg>
+
+        <!-- Canlı Dokunma Efektli Orta Buton -->
+        <div class="click-area" id="clickArea" 
+             ontouchstart="triggerPressEffect()" 
+             onmousedown="triggerPressEffect()" 
+             onclick="increment()">
+            <div class="counter-value" id="counter">0</div>
+            <div class="counter-target-label" id="targetLabel">/ 33</div>
+            <div class="sub-counter">
+                <span>🔄</span> <span id="loopCount">0</span>
+            </div>
+        </div>
     </div>
 
     <!-- Kontrol Butonları -->
@@ -362,9 +392,9 @@
         <button class="btn" onclick="openTargetModal()">🎯 Hedef Seç</button>
     </div>
 
-    <div class="footer">
-        Ses Destekli Dijital Tesbih
-    </div>
+    <button class="full-btn" onclick="alert('Reklamsız deneyim aktif!')">
+        ✨ Reklamsız deneyimi keşfet ✨
+    </button>
 </div>
 
 <!-- Hedef Seçme Modal Penceresi -->
@@ -393,9 +423,10 @@
     const targetModal = document.getElementById('targetModal');
     const customInput = document.getElementById('customTargetInput');
     const counterEl = document.getElementById('counter');
-    const targetInfoEl = document.getElementById('target-info-text');
-    const goalAlertEl = document.getElementById('goalAlert');
+    const targetLabelEl = document.getElementById('targetLabel');
+    const loopCountEl = document.getElementById('loopCount');
     const clickAreaEl = document.getElementById('clickArea');
+    const tesbihSvg = document.getElementById('tesbihSvg');
 
     // --- TEMA YÖNETİMİ ---
     function initTheme() {
@@ -433,10 +464,9 @@
             }
             const osc = audioCtx.createOscillator();
             const gain = audioCtx.createGain();
-            osc.type = 'triangle'; // Daha tok ve gür bir ses tonu
+            osc.type = 'triangle';
             osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
             
-            // Ses yüksekliğini artırdık (Gain değerini yükselttik)
             gain.gain.setValueAtTime(0.25, audioCtx.currentTime);
             gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
             
@@ -457,20 +487,53 @@
         }, 100);
     }
 
+    // --- DAİRESEL BONCUKLARI OLUŞTURMA VE BOYAMA ---
+    function renderTesbihBeads() {
+        tesbihSvg.innerHTML = '';
+        let centerX = 150;
+        let centerY = 150;
+        let radius = 125; // Çember yarıçapı
+        
+        // Hedefe göre boncuk sayısı (Örn: Hedef 33 veya 100 ise ona göre daireyi bölelim, standart 33 veya en fazla kaçsa ona göre ölçekleyebiliriz. Videodaki gibi akıcı olması için hedef kadar veya max 33-66 adet nokta koyalım)
+        let totalBeads = target > 60 ? 60 : target; // Çok sıkışmaması için maksimum 60 nokta gösterelim, aksi halde hedef adedi kadar
+        if (totalBeads < 20) totalBeads = 33; // Küçük hedeflerde bile halka tamamlansın
+
+        let currentProgressInTarget = count % target;
+
+        for (let i = 0; i < totalBeads; i++) {
+            let angle = (i * 2 * Math.PI) / totalBeads;
+            let x = centerX + radius * Math.cos(angle);
+            let y = centerY + radius * Math.sin(angle);
+
+            let circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+            circle.setAttribute("cx", x);
+            circle.setAttribute("cy", y);
+            circle.setAttribute("r", "4.5");
+            circle.setAttribute("class", "bead");
+
+            // Hangi boncukların yeşil olacağını hesapla
+            let activeBeadThreshold = Math.floor((currentProgressInTarget / target) * totalBeads);
+            
+            if (i < activeBeadThreshold || (currentProgressInTarget > 0 && i === 0)) {
+                circle.setAttribute("fill", "var(--accent-color)");
+                circle.setAttribute("r", "5.5"); // Aktif olan biraz daha belirgin
+            } else {
+                circle.setAttribute("fill", "var(--bead-inactive)");
+            }
+
+            tesbihSvg.appendChild(circle);
+        }
+    }
+
     // --- GÖRÜNÜM & HESAPLAMA GÜNCELLEME ---
     function updateDisplay() {
-        counterEl.innerText = count;
+        counterEl.innerText = count % target;
+        targetLabelEl.innerText = `/ ${target}`;
         
-        let remainder = target - (count % target);
-        if (remainder === target) remainder = 0; 
-        
-        targetInfoEl.innerText = `Hedef: ${target} (Kalan: ${remainder})`;
+        let completedLoops = Math.floor(count / target);
+        loopCountEl.innerText = completedLoops;
 
-        if (count > 0 && count % target === 0) {
-            goalAlertEl.style.display = 'block';
-        } else {
-            goalAlertEl.style.display = 'none';
-        }
+        renderTesbihBeads();
     }
 
     // --- HEDEF YÖNETİMİ ---
@@ -532,8 +595,8 @@
         count++;
         localStorage.setItem('zikir_count', count);
 
-        if (target > 0 && count % target === 0) {
-            playClickSound(880, 0.25);
+        if (count > 0 && count % target === 0) {
+            playClickSound(880, 0.25); // Hedef bitişi özel ton
         } else {
             playClickSound(650, 0.06);
         }
