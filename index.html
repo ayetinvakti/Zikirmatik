@@ -87,7 +87,7 @@
             flex-direction: column;
             align-items: center;
             position: relative;
-            margin-bottom: 15px;
+            margin-bottom: 25px;
             padding-top: 5px;
         }
 
@@ -109,7 +109,7 @@
         }
 
         .header h1 {
-            font-size: 1.6rem;
+            font-size: 1.8rem;
             color: var(--accent-color);
             margin-top: 15px;
             margin-bottom: 2px;
@@ -122,21 +122,6 @@
             text-align: center;
         }
 
-        /* Üst Duyuru / Reklam Alanı (Videodaki gibi) */
-        .banner-card {
-            background-color: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 14px;
-            width: 100%;
-            padding: 12px;
-            text-align: center;
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: var(--text-color);
-            box-shadow: var(--shadow);
-            margin-bottom: 20px;
-        }
-
         /* Dairesel Tesbih ve Butonun Kapsayıcısı */
         .tesbih-wrapper {
             position: relative;
@@ -145,7 +130,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
         }
 
         /* Etraftaki Noktalı Dairesel Halkaca Ait SVG */
@@ -156,7 +141,7 @@
             width: 100%;
             height: 100%;
             pointer-events: none;
-            transform: rotate(-90deg); /* Üst noktadan (12 yönünden) başlatmak için */
+            transform: rotate(-90deg);
         }
 
         .bead {
@@ -218,18 +203,17 @@
             display: flex;
             gap: 12px;
             width: 100%;
-            margin-bottom: 12px;
         }
 
         .btn {
             flex: 1;
-            padding: 12px;
+            padding: 14px;
             border-radius: 12px;
             border: 1px solid var(--border-color);
             background-color: var(--card-bg);
             color: var(--text-color);
             font-weight: 600;
-            font-size: 0.9rem;
+            font-size: 0.95rem;
             cursor: pointer;
             touch-action: manipulation;
             display: flex;
@@ -241,20 +225,6 @@
 
         .btn:hover {
             background-color: var(--btn-hover);
-        }
-
-        .full-btn {
-            width: 100%;
-            background-color: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 12px;
-            color: var(--text-color);
-            font-weight: 600;
-            font-size: 0.9rem;
-            cursor: pointer;
-            box-shadow: var(--shadow);
-            text-align: center;
         }
 
         /* Hedef Seçme Modalı */
@@ -361,16 +331,11 @@
         <p>Ayetin Vakti</p>
     </div>
 
-    <!-- Üst Banner (Videodaki Alan) -->
-    <div class="banner-card">
-        ✨ Özel Zikirlerin Sırrını Keşfedin ✨
-    </div>
-
     <!-- Dairesel Tesbih ve Orta Buton Alanı -->
     <div class="tesbih-wrapper">
         <!-- SVG Dairesel Boncuklar -->
         <svg class="tesbih-svg" viewBox="0 0 300 300" id="tesbihSvg">
-            <!-- Dinamik olarak JS ile oluşturulacak boncuklar buraya gelecek -->
+            <!-- Dinamik olarak JS ile oluşturulacak boncuklar -->
         </svg>
 
         <!-- Canlı Dokunma Efektli Orta Buton -->
@@ -391,10 +356,6 @@
         <button class="btn" onclick="resetCounter()">🔄 Sıfırla</button>
         <button class="btn" onclick="openTargetModal()">🎯 Hedef Seç</button>
     </div>
-
-    <button class="full-btn" onclick="alert('Reklamsız deneyim aktif!')">
-        ✨ Reklamsız deneyimi keşfet ✨
-    </button>
 </div>
 
 <!-- Hedef Seçme Modal Penceresi -->
@@ -492,11 +453,10 @@
         tesbihSvg.innerHTML = '';
         let centerX = 150;
         let centerY = 150;
-        let radius = 125; // Çember yarıçapı
+        let radius = 125;
         
-        // Hedefe göre boncuk sayısı (Örn: Hedef 33 veya 100 ise ona göre daireyi bölelim, standart 33 veya en fazla kaçsa ona göre ölçekleyebiliriz. Videodaki gibi akıcı olması için hedef kadar veya max 33-66 adet nokta koyalım)
-        let totalBeads = target > 60 ? 60 : target; // Çok sıkışmaması için maksimum 60 nokta gösterelim, aksi halde hedef adedi kadar
-        if (totalBeads < 20) totalBeads = 33; // Küçük hedeflerde bile halka tamamlansın
+        let totalBeads = target > 60 ? 60 : target;
+        if (totalBeads < 20) totalBeads = 33;
 
         let currentProgressInTarget = count % target;
 
@@ -511,12 +471,11 @@
             circle.setAttribute("r", "4.5");
             circle.setAttribute("class", "bead");
 
-            // Hangi boncukların yeşil olacağını hesapla
             let activeBeadThreshold = Math.floor((currentProgressInTarget / target) * totalBeads);
             
             if (i < activeBeadThreshold || (currentProgressInTarget > 0 && i === 0)) {
                 circle.setAttribute("fill", "var(--accent-color)");
-                circle.setAttribute("r", "5.5"); // Aktif olan biraz daha belirgin
+                circle.setAttribute("r", "5.5");
             } else {
                 circle.setAttribute("fill", "var(--bead-inactive)");
             }
@@ -596,7 +555,7 @@
         localStorage.setItem('zikir_count', count);
 
         if (count > 0 && count % target === 0) {
-            playClickSound(880, 0.25); // Hedef bitişi özel ton
+            playClickSound(880, 0.25);
         } else {
             playClickSound(650, 0.06);
         }
