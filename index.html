@@ -175,23 +175,23 @@
         }
 
         .counter-value {
-            font-size: 3.2rem;
+            font-size: 2.8rem;
             font-weight: 800;
             color: var(--text-color);
             font-family: 'Courier New', Courier, monospace;
             line-height: 1;
-            margin-bottom: 4px;
+            margin-bottom: 2px;
         }
 
         .counter-target-label {
-            font-size: 1rem;
+            font-size: 0.9rem;
             font-weight: 600;
             color: var(--accent-color);
-            margin-bottom: 4px;
+            margin-bottom: 2px;
         }
 
         .sub-counter {
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             color: var(--text-muted);
             display: flex;
             align-items: center;
@@ -345,9 +345,7 @@
              onclick="increment()">
             <div class="counter-value" id="counter">0</div>
             <div class="counter-target-label" id="targetLabel">/ 33</div>
-            <div class="sub-counter">
-                <span>🔄</span> <span id="loopCount">0</span>
-            </div>
+            <div class="sub-counter" id="remainderLabel">Kalan: 33</div>
         </div>
     </div>
 
@@ -385,7 +383,7 @@
     const customInput = document.getElementById('customTargetInput');
     const counterEl = document.getElementById('counter');
     const targetLabelEl = document.getElementById('targetLabel');
-    const loopCountEl = document.getElementById('loopCount');
+    const remainderLabelEl = document.getElementById('remainderLabel');
     const clickAreaEl = document.getElementById('clickArea');
     const tesbihSvg = document.getElementById('tesbihSvg');
 
@@ -486,11 +484,13 @@
 
     // --- GÖRÜNÜM & HESAPLAMA GÜNCELLEME ---
     function updateDisplay() {
-        counterEl.innerText = count % target;
+        let currentInLoop = count % target;
+        let remainder = target - currentInLoop;
+        if (remainder === target && count > 0) remainder = 0;
+
+        counterEl.innerText = currentInLoop;
         targetLabelEl.innerText = `/ ${target}`;
-        
-        let completedLoops = Math.floor(count / target);
-        loopCountEl.innerText = completedLoops;
+        remainderLabelEl.innerText = `Kalan: ${remainder}`;
 
         renderTesbihBeads();
     }
