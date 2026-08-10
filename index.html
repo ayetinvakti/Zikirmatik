@@ -17,6 +17,9 @@
     <meta property="og:description" content="Titreşim ve ses destekli, kullanımı kolay dijital tesbih.">
     <meta property="og:type" content="website">
 
+    <!-- Tatlı bir el yazısı fontu için Google Fonts eklemesi -->
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&display=swap" rel="stylesheet">
+
     <style>
         /* Gece Teması (Varsayılan Koyu Mode) */
         :root {
@@ -84,7 +87,7 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
             position: relative;
         }
 
@@ -126,12 +129,35 @@
             background-color: var(--btn-hover);
         }
 
+        /* Üst Tatlı Zikir Başlıkları Alanı */
+        .sweet-dhikr-bar {
+            width: 100%;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            margin-bottom: 10px;
+            padding: 6px 12px;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+        }
+
+        .sweet-dhikr-item {
+            font-family: 'Caveat', cursive, sans-serif;
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--accent-color);
+            letter-spacing: 0.5px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
         .header {
             width: 100%;
             display: flex;
             flex-direction: column;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
 
         .header h1 {
@@ -348,10 +374,17 @@
 <body>
 
 <div class="container">
-    <!-- Üst Bar: Yazısız Geri Tuşu ve Yazısız Tema İkonu -->
+    <!-- Üst Bar: Geri Tuşu ve Tema İkonu -->
     <div class="navbar">
         <a href="../" class="home-btn" title="Ana Sayfa">←</a>
         <button class="theme-icon-btn" onclick="toggleTheme()" id="theme-btn" title="Tema Değiştir">☀️</button>
+    </div>
+
+    <!-- Üst Boşluğu Dengeleyen Tatlı Yazı Alanı -->
+    <div class="sweet-dhikr-bar">
+        <span class="sweet-dhikr-item">Sübhanallah</span>
+        <span class="sweet-dhikr-item">Elhamdülillah</span>
+        <span class="sweet-dhikr-item">Allahu Ekber</span>
     </div>
 
     <div class="header">
@@ -361,7 +394,7 @@
 
     <div class="tesbih-wrapper">
         <svg class="tesbih-svg" viewBox="0 0 300 300" id="tesbihSvg">
-            </svg>
+        </svg>
 
         <div class="click-area" id="clickArea" 
              ontouchstart="triggerPressEffect()" 
