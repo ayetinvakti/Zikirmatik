@@ -121,7 +121,12 @@
             flex-direction: row-reverse;
         }
 
-        .home-btn {
+        .nav-right-group {
+            display: flex;
+            gap: 8px;
+        }
+
+        .home-btn, .theme-icon-btn, .view-mode-btn {
             background-color: var(--btn-bg);
             border: 1px solid var(--border-color);
             color: var(--text-color);
@@ -137,25 +142,7 @@
             text-decoration: none;
         }
 
-        .home-btn:hover {
-            background-color: var(--btn-hover);
-        }
-
-        .theme-icon-btn {
-            background-color: var(--btn-bg);
-            border: 1px solid var(--border-color);
-            color: var(--text-color);
-            width: 38px;
-            height: 38px;
-            border-radius: 50%;
-            font-size: 1.1rem;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .theme-icon-btn:hover {
+        .home-btn:hover, .theme-icon-btn:hover, .view-mode-btn:hover {
             background-color: var(--btn-hover);
         }
 
@@ -203,7 +190,18 @@
             text-align: center;
         }
 
-        /* Dairesel Tesbih ve Butonun Kapsayıcısı */
+        /* Görünüm Konteynerleri Genel */
+        .view-container {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 300px;
+            margin-bottom: 25px;
+        }
+
+        /* --- GÖRÜNÜM 1: Dairesel Tesbih --- */
         .tesbih-wrapper {
             position: relative;
             width: 300px;
@@ -211,10 +209,8 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-bottom: 25px;
         }
 
-        /* Etraftaki Noktalı Dairesel Halkaca Ait SVG */
         .tesbih-svg {
             position: absolute;
             top: 0;
@@ -278,6 +274,114 @@
             align-items: center;
             gap: 4px;
         }
+
+        /* --- GÖRÜNÜM 2: Parmak Sayma Animasyonlu --- */
+        .hand-view-card {
+            width: 260px;
+            height: 280px;
+            background: var(--card-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 24px;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            padding: 20px;
+            position: relative;
+            touch-action: manipulation;
+        }
+
+        .hand-view-card:active {
+            transform: scale(0.96);
+        }
+
+        .hand-icon-svg {
+            width: 90px;
+            height: 90px;
+            fill: var(--accent-color);
+            margin-bottom: 12px;
+            transition: transform 0.15s ease;
+        }
+
+        .hand-view-card.pressed .hand-icon-svg {
+            transform: scale(1.12) rotate(-5deg);
+        }
+
+        .hand-counter-val {
+            font-size: 2.5rem;
+            font-weight: 800;
+            font-family: 'Courier New', Courier, monospace;
+            color: var(--text-color);
+        }
+
+        .hand-target-val {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        /* --- GÖRÜNÜM 3: Yatay Tesbih Çekme Animasyonlu --- */
+        .linear-tesbih-card {
+            width: 100%;
+            max-width: 340px;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            padding: 25px 15px;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            cursor: pointer;
+            touch-action: manipulation;
+        }
+
+        .linear-track {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            overflow: hidden;
+            padding: 10px 0;
+        }
+
+        .linear-bead {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background-color: var(--bead-inactive);
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .linear-bead.active {
+            background-color: var(--accent-color);
+            transform: scale(1.3);
+            box-shadow: 0 0 10px var(--accent-color);
+        }
+
+        .linear-info {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+        }
+
+        .linear-counter-val {
+            font-size: 2.2rem;
+            font-weight: 800;
+            font-family: 'Courier New', Courier, monospace;
+            color: var(--text-color);
+        }
+
+        .linear-hint {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
 
         /* Kontrol Butonları */
         .controls {
@@ -404,10 +508,13 @@
 <body>
 
 <div class="container">
-    <!-- Üst Bar: Geri Tuşu ve Tema İkonu -->
+    <!-- Üst Bar: Geri Tuşu, Görünüm Değiştirme ve Tema İkonu -->
     <div class="navbar">
         <a href="../" class="home-btn" title="Ana Sayfa">←</a>
-        <button class="theme-icon-btn" onclick="toggleTheme()" id="theme-btn" title="Tema Değiştir">☀️</button>
+        <div class="nav-right-group">
+            <button class="view-mode-btn" onclick="toggleViewMode()" id="viewModeBtn" title="Görünüm Değiştir">🔄</button>
+            <button class="theme-icon-btn" onclick="toggleTheme()" id="theme-btn" title="Tema Değiştir">☀️</button>
+        </div>
     </div>
 
     <!-- Üst Boşluğu Dengeleyen Tatlı Yazı Alanı -->
@@ -422,17 +529,46 @@
         <p data-i18n="brand_subtitle">Ayetin Vakti</p>
     </div>
 
-    <div class="tesbih-wrapper">
-        <svg class="tesbih-svg" viewBox="0 0 300 300" id="tesbihSvg">
-        </svg>
+    <!-- GÖRÜNÜM 1: Dairesel Tesbih -->
+    <div class="view-container" id="view1">
+        <div class="tesbih-wrapper">
+            <svg class="tesbih-svg" viewBox="0 0 300 300" id="tesbihSvg">
+            </svg>
 
-        <div class="click-area" id="clickArea" 
-             ontouchstart="triggerPressEffect()" 
-             onmousedown="triggerPressEffect()" 
+            <div class="click-area" id="clickArea1" 
+                 ontouchstart="triggerPressEffect('view1')" 
+                 onmousedown="triggerPressEffect('view1')" 
+                 onclick="increment()">
+                <div class="counter-value" id="counter1">0</div>
+                <div class="counter-target-label" id="targetLabel1">/ 33</div>
+                <div class="sub-counter" id="remainderLabel1">Kalan: 33</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- GÖRÜNÜM 2: Parmak Sayma Animasyonlu -->
+    <div class="view-container" id="view2" style="display: none;">
+        <div class="hand-view-card" id="handCard"
+             ontouchstart="triggerPressEffect('view2')" 
+             onmousedown="triggerPressEffect('view2')" 
              onclick="increment()">
-            <div class="counter-value" id="counter">0</div>
-            <div class="counter-target-label" id="targetLabel">/ 33</div>
-            <div class="sub-counter" id="remainderLabel">Kalan: 33</div>
+            <svg class="hand-icon-svg" viewBox="0 0 24 24"><path d="M18 10V6a2 2 0 0 0-4 0v1h-1V4a2 2 0 0 0-4 0v6.27L7.36 9.4a2.11 2.11 0 0 0-2.97.16 2.15 2.15 0 0 0-.16 2.97l3.87 4.54C9.57 18.78 11.62 20 14 20h2.5a5.5 5.5 0 0 0 5.5-5.5v-3a1.5 1.5 0 0 0-1.5-1.5H18m2 4.5a3.5 3.5 0 0 1-3.5 3.5H14c-1.85 0-3.48-.96-4.38-2.42l-3.5-4.11a.15.15 0 0 1 .05-.22.14.14 0 0 1 .21.05l3.82 4.48V5a1 1 0 0 1 2 0v7h1V7a1 1 0 0 1 2 0v5h1V8a1 1 0 0 1 2 0v6.5z"/></svg>
+            <div class="hand-counter-val" id="counter2">0</div>
+            <div class="hand-target-val" id="targetLabel2">/ 33</div>
+        </div>
+    </div>
+
+    <!-- GÖRÜNÜM 3: Yatay Tesbih Çekme Animasyonlu -->
+    <div class="view-container" id="view3" style="display: none;">
+        <div class="linear-tesbih-card" id="linearCard"
+             ontouchstart="triggerPressEffect('view3')" 
+             onmousedown="triggerPressEffect('view3')" 
+             onclick="increment()">
+            <div class="linear-track" id="linearTrack"></div>
+            <div class="linear-info">
+                <div class="linear-counter-val" id="counter3">0</div>
+                <div class="linear-hint" id="targetLabel3">/ 33</div>
+            </div>
         </div>
     </div>
 
@@ -514,15 +650,23 @@
 
     let count = parseInt(localStorage.getItem('zikir_count')) || 0;
     let target = parseInt(localStorage.getItem('zikir_target')) || 33;
+    let currentViewMode = parseInt(localStorage.getItem('zikir_view_mode')) || 1;
     let audioCtx = null;
 
     const targetModal = document.getElementById('targetModal');
     const customInput = document.getElementById('customTargetInput');
-    const counterEl = document.getElementById('counter');
-    const targetLabelEl = document.getElementById('targetLabel');
-    const remainderLabelEl = document.getElementById('remainderLabel');
-    const clickAreaEl = document.getElementById('clickArea');
+    const counterEl1 = document.getElementById('counter1');
+    const counterEl2 = document.getElementById('counter2');
+    const counterEl3 = document.getElementById('counter3');
+    const targetLabelEl1 = document.getElementById('targetLabel1');
+    const targetLabelEl2 = document.getElementById('targetLabel2');
+    const targetLabelEl3 = document.getElementById('targetLabel3');
+    const remainderLabelEl1 = document.getElementById('remainderLabel1');
+    const clickAreaEl1 = document.getElementById('clickArea1');
+    const handCardEl = document.getElementById('handCard');
+    const linearCardEl = document.getElementById('linearCard');
     const tesbihSvg = document.getElementById('tesbihSvg');
+    const linearTrack = document.getElementById('linearTrack');
     const themeBtn = document.getElementById('theme-btn');
 
     // --- TEMA YÖNETİMİ ---
@@ -564,6 +708,20 @@
     }
     updateThemeButton(isLightInitial);
 
+    // --- GÖRÜNÜM DEĞİŞTİRME ---
+    function toggleViewMode() {
+        currentViewMode = currentViewMode >= 3 ? 1 : currentViewMode + 1;
+        localStorage.setItem('zikir_view_mode', currentViewMode);
+        applyViewMode();
+        updateDisplay();
+    }
+
+    function applyViewMode() {
+        document.getElementById('view1').style.display = currentViewMode === 1 ? 'flex' : 'none';
+        document.getElementById('view2').style.display = currentViewMode === 2 ? 'flex' : 'none';
+        document.getElementById('view3').style.display = currentViewMode === 3 ? 'flex' : 'none';
+    }
+
     // --- SES ÜRETİCİ ---
     function playClickSound(freq = 650, duration = 0.06) {
         try {
@@ -590,15 +748,21 @@
         }
     }
 
-    // --- BUTON BASMA ANİMASYONU ---
-    function triggerPressEffect() {
-        clickAreaEl.classList.add('pressed');
-        setTimeout(() => {
-            clickAreaEl.classList.remove('pressed');
-        }, 100);
+    // --- BASMA ANİMASYONU ---
+    function triggerPressEffect(viewId) {
+        if (viewId === 'view1') {
+            clickAreaEl1.classList.add('pressed');
+            setTimeout(() => clickAreaEl1.classList.remove('pressed'), 100);
+        } else if (viewId === 'view2') {
+            handCardEl.classList.add('pressed');
+            setTimeout(() => handCardEl.classList.remove('pressed'), 120);
+        } else if (viewId === 'view3') {
+            linearCardEl.style.transform = 'scale(0.97)';
+            setTimeout(() => linearCardEl.style.transform = 'scale(1)', 100);
+        }
     }
 
-    // --- DAİRESEL BONCUKLARI OLUŞTURMA VE BOYAMA ---
+    // --- GÖRÜNÜM 1: DAİRESEL BONCUKLAR ---
     function renderTesbihBeads() {
         tesbihSvg.innerHTML = '';
         let centerX = 150;
@@ -634,17 +798,43 @@
         }
     }
 
+    // --- GÖRÜNÜM 3: YATAY BONCUKLAR ---
+    function renderLinearBeads() {
+        linearTrack.innerHTML = '';
+        let totalBeads = target > 15 ? 15 : target;
+        let currentProgressInTarget = count % target;
+
+        for (let i = 0; i < totalBeads; i++) {
+            let bead = document.createElement('div');
+            bead.className = 'linear-bead';
+            
+            let activeThreshold = Math.floor((currentProgressInTarget / target) * totalBeads);
+            if (i < activeThreshold || (currentProgressInTarget > 0 && i === 0)) {
+                bead.classList.add('active');
+            }
+            linearTrack.appendChild(bead);
+        }
+    }
+
     // --- GÖRÜNÜM & HESAPLAMA GÜNCELLEME ---
     function updateDisplay() {
         let currentInLoop = count % target;
         let remainder = target - currentInLoop;
         if (remainder === target && count > 0) remainder = 0;
 
-        counterEl.innerText = currentInLoop;
-        targetLabelEl.innerText = `/ ${target}`;
-        remainderLabelEl.innerText = `${t.remainder_text}${remainder}`;
+        // Metinleri güncelle
+        counterEl1.innerText = currentInLoop;
+        targetLabelEl1.innerText = `/ ${target}`;
+        remainderLabelEl1.innerText = `${t.remainder_text}${remainder}`;
 
-        renderTesbihBeads();
+        counterEl2.innerText = currentInLoop;
+        targetLabelEl2.innerText = `/ ${target}`;
+
+        counterEl3.innerText = currentInLoop;
+        targetLabelEl3.innerText = `${t.remainder_text}${remainder} (${currentInLoop} / ${target})`;
+
+        if (currentViewMode === 1) renderTesbihBeads();
+        if (currentViewMode === 3) renderLinearBeads();
     }
 
     // --- HEDEF YÖNETİMİ ---
@@ -727,6 +917,7 @@
     // Başlangıç Kurulumu
     window.onload = () => {
         target = parseInt(localStorage.getItem('zikir_target')) || 33;
+        currentViewMode = parseInt(localStorage.getItem('zikir_view_mode')) || 1;
 
         // Statik metinleri dile göre yerleştir
         document.querySelectorAll('[data-i18n]').forEach(el => {
@@ -737,6 +928,7 @@
             }
         });
 
+        applyViewMode();
         updateActiveButtonStates();
         updateDisplay();
     };
