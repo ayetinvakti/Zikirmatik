@@ -14,7 +14,6 @@
             document.body && document.body.classList.add('light-mode');
         }
 
-        // Ayarlardan kaydedilen özel renkleri hemen uygula
         const savedAccent = localStorage.getItem('custom_accent');
         const savedBg = localStorage.getItem('custom_bg');
         const savedText = localStorage.getItem('custom_text');
@@ -26,7 +25,6 @@
         }
         if (savedText) document.documentElement.style.setProperty('--text-color', savedText);
 
-        // Dil yönü ayarı (RTL / LTR)
         const currentLang = localStorage.getItem('user_lang') || 'tr';
         if (currentLang === 'ar') {
             document.documentElement.setAttribute('dir', 'rtl');
@@ -43,11 +41,9 @@
     <meta property="og:description" content="Titreşim ve ses destekli, kullanımı kolay dijital tesbih.">
     <meta property="og:type" content="website">
 
-    <!-- Tatlı bir el yazısı fontu için Google Fonts eklemesi -->
     <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&display=swap" rel="stylesheet">
 
     <style>
-        /* Gece Teması (Varsayılan Koyu Mode) */
         :root {
             --bg-color: #0f172a;
             --card-bg: #1e293b;
@@ -62,7 +58,6 @@
             --bead-inactive: #475569;
         }
 
-        /* Gündüz Teması (Açık Mode) */
         html.light-mode, body.light-mode {
             --bg-color: #f8fafc;
             --card-bg: #ffffff;
@@ -107,7 +102,6 @@
             align-items: center;
         }
 
-        /* Navbar & Yuvarlak Buton Düzeni */
         .navbar {
             width: 100%;
             display: flex;
@@ -146,7 +140,6 @@
             background-color: var(--btn-hover);
         }
 
-        /* Üst Tatlı Zikir Başlıkları Alanı */
         .sweet-dhikr-bar {
             width: 100%;
             display: flex;
@@ -166,7 +159,6 @@
             font-weight: 600;
             color: var(--accent-color);
             letter-spacing: 0.5px;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.05);
         }
 
         .header {
@@ -190,15 +182,14 @@
             text-align: center;
         }
 
-        /* Görünüm Konteynerleri Genel */
         .view-container {
             width: 100%;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            min-height: 300px;
-            margin-bottom: 25px;
+            min-height: 320px;
+            margin-bottom: 20px;
         }
 
         /* --- GÖRÜNÜM 1: Dairesel Tesbih --- */
@@ -225,7 +216,6 @@
             transition: fill 0.2s ease, r 0.2s ease;
         }
 
-        /* Ana Tıklama Dairesi (Ortadaki Buton) */
         .click-area {
             width: 170px;
             height: 170px;
@@ -238,17 +228,13 @@
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            transition: transform 0.06s cubic-bezier(0.4, 0, 0.2, 1), 
-                        box-shadow 0.06s cubic-bezier(0.4, 0, 0.2, 1),
-                        filter 0.06s ease;
+            transition: transform 0.06s cubic-bezier(0.4, 0, 0.2, 1);
             touch-action: manipulation;
             z-index: 2;
         }
 
-        .click-area:active, .click-area.pressed {
+        .click-area:active {
             transform: scale(0.91);
-            box-shadow: 0 4px 10px rgba(16, 185, 129, 0.2);
-            filter: brightness(0.95);
         }
 
         .counter-value {
@@ -270,120 +256,112 @@
         .sub-counter {
             font-size: 0.75rem;
             color: var(--text-muted);
-            display: flex;
-            align-items: center;
-            gap: 4px;
         }
 
-        /* --- GÖRÜNÜM 2: Parmak Sayma Animasyonlu --- */
+
+        /* --- GÖRÜNÜM 2: GERÇEKÇİ PARMAK VE BOĞUM SAYIMI --- */
         .hand-view-card {
-            width: 260px;
-            height: 280px;
-            background: var(--card-bg);
-            border: 2px solid var(--border-color);
-            border-radius: 24px;
-            box-shadow: var(--shadow);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            padding: 20px;
-            position: relative;
-            touch-action: manipulation;
-        }
-
-        .hand-view-card:active {
-            transform: scale(0.96);
-        }
-
-        .hand-icon-svg {
-            width: 90px;
-            height: 90px;
-            fill: var(--accent-color);
-            margin-bottom: 12px;
-            transition: transform 0.15s ease;
-        }
-
-        .hand-view-card.pressed .hand-icon-svg {
-            transform: scale(1.12) rotate(-5deg);
-        }
-
-        .hand-counter-val {
-            font-size: 2.5rem;
-            font-weight: 800;
-            font-family: 'Courier New', Courier, monospace;
-            color: var(--text-color);
-        }
-
-        .hand-target-val {
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            margin-top: 4px;
-        }
-
-        /* --- GÖRÜNÜM 3: Yatay Tesbih Çekme Animasyonlu --- */
-        .linear-tesbih-card {
             width: 100%;
             max-width: 340px;
             background: var(--card-bg);
             border: 1px solid var(--border-color);
             border-radius: 24px;
-            padding: 25px 15px;
             box-shadow: var(--shadow);
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 20px;
-            cursor: pointer;
-            touch-action: manipulation;
+            padding: 15px;
+            position: relative;
         }
 
-        .linear-track {
+        .hand-svg-container {
+            width: 100%;
+            height: 200px;
             display: flex;
-            gap: 10px;
             justify-content: center;
             align-items: center;
-            width: 100%;
-            overflow: hidden;
-            padding: 10px 0;
         }
 
-        .linear-bead {
-            width: 18px;
-            height: 18px;
-            border-radius: 50%;
-            background-color: var(--bead-inactive);
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        .phalanx-node {
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+        .phalanx-node:hover circle {
+            stroke: var(--accent-color);
+            stroke-width: 3px;
         }
 
-        .linear-bead.active {
-            background-color: var(--accent-color);
-            transform: scale(1.3);
-            box-shadow: 0 0 10px var(--accent-color);
-        }
-
-        .linear-info {
+        .hand-info-box {
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 2px;
+            margin-top: 5px;
         }
 
-        .linear-counter-val {
+        .hand-counter-val {
             font-size: 2.2rem;
             font-weight: 800;
             font-family: 'Courier New', Courier, monospace;
             color: var(--text-color);
         }
 
-        .linear-hint {
-            font-size: 0.75rem;
-            color: var(--text-muted);
+        .hand-hint {
+            font-size: 0.8rem;
+            color: var(--accent-color);
+            font-weight: 600;
+            text-align: center;
+            margin-top: 2px;
         }
 
 
-        /* Kontrol Butonları */
+        /* --- GÖRÜNÜM 3: GERÇEKÇİ KAYDIRMALI TESBİH --- */
+        .drag-tesbih-card {
+            width: 100%;
+            max-width: 340px;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            padding: 20px 15px;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            touch-action: none; /* Kaydırma jestleri için gerekli */
+            cursor: grab;
+        }
+
+        .drag-tesbih-card:active {
+            cursor: grabbing;
+        }
+
+        .drag-track-svg {
+            width: 100%;
+            height: 120px;
+        }
+
+        .drag-info {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+        }
+
+        .drag-counter-val {
+            font-size: 2.2rem;
+            font-weight: 800;
+            font-family: 'Courier New', Courier, monospace;
+            color: var(--text-color);
+        }
+
+        .drag-hint {
+            font-size: 0.78rem;
+            color: var(--accent-color);
+            font-weight: 600;
+            text-align: center;
+        }
+
+
         .controls {
             display: flex;
             gap: 12px;
@@ -412,7 +390,6 @@
             background-color: var(--btn-hover);
         }
 
-        /* Hedef Seçme Modalı */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -508,7 +485,6 @@
 <body>
 
 <div class="container">
-    <!-- Üst Bar: Geri Tuşu, Görünüm Değiştirme ve Tema İkonu -->
     <div class="navbar">
         <a href="../" class="home-btn" title="Ana Sayfa">←</a>
         <div class="nav-right-group">
@@ -517,7 +493,6 @@
         </div>
     </div>
 
-    <!-- Üst Boşluğu Dengeleyen Tatlı Yazı Alanı -->
     <div class="sweet-dhikr-bar">
         <span class="sweet-dhikr-item" data-i18n="dhikr_subhanallah">Sübhanallah</span>
         <span class="sweet-dhikr-item" data-i18n="dhikr_elhamdulillah">Elhamdülillah</span>
@@ -535,10 +510,7 @@
             <svg class="tesbih-svg" viewBox="0 0 300 300" id="tesbihSvg">
             </svg>
 
-            <div class="click-area" id="clickArea1" 
-                 ontouchstart="triggerPressEffect('view1')" 
-                 onmousedown="triggerPressEffect('view1')" 
-                 onclick="increment()">
+            <div class="click-area" id="clickArea1" onclick="increment()">
                 <div class="counter-value" id="counter1">0</div>
                 <div class="counter-target-label" id="targetLabel1">/ 33</div>
                 <div class="sub-counter" id="remainderLabel1">Kalan: 33</div>
@@ -546,28 +518,28 @@
         </div>
     </div>
 
-    <!-- GÖRÜNÜM 2: Parmak Sayma Animasyonlu -->
+    <!-- GÖRÜNÜM 2: PARMAK BOĞUMLARIYLA ZİKİR -->
     <div class="view-container" id="view2" style="display: none;">
-        <div class="hand-view-card" id="handCard"
-             ontouchstart="triggerPressEffect('view2')" 
-             onmousedown="triggerPressEffect('view2')" 
-             onclick="increment()">
-            <svg class="hand-icon-svg" viewBox="0 0 24 24"><path d="M18 10V6a2 2 0 0 0-4 0v1h-1V4a2 2 0 0 0-4 0v6.27L7.36 9.4a2.11 2.11 0 0 0-2.97.16 2.15 2.15 0 0 0-.16 2.97l3.87 4.54C9.57 18.78 11.62 20 14 20h2.5a5.5 5.5 0 0 0 5.5-5.5v-3a1.5 1.5 0 0 0-1.5-1.5H18m2 4.5a3.5 3.5 0 0 1-3.5 3.5H14c-1.85 0-3.48-.96-4.38-2.42l-3.5-4.11a.15.15 0 0 1 .05-.22.14.14 0 0 1 .21.05l3.82 4.48V5a1 1 0 0 1 2 0v7h1V7a1 1 0 0 1 2 0v5h1V8a1 1 0 0 1 2 0v6.5z"/></svg>
-            <div class="hand-counter-val" id="counter2">0</div>
-            <div class="hand-target-val" id="targetLabel2">/ 33</div>
+        <div class="hand-view-card">
+            <div class="hand-svg-container" id="handSvgContainer">
+                <!-- SVG El ve Boğum Noktaları Dinamik Çizilir -->
+            </div>
+            <div class="hand-info-box">
+                <div class="hand-counter-val" id="counter2">0</div>
+                <div class="hand-hint" data-i18n="hand_hint">Parmak boğumlarına dokunarak zikir çekin</div>
+            </div>
         </div>
     </div>
 
-    <!-- GÖRÜNÜM 3: Yatay Tesbih Çekme Animasyonlu -->
+    <!-- GÖRÜNÜM 3: GERÇEKÇİ KAYDIRMALI TESBİH -->
     <div class="view-container" id="view3" style="display: none;">
-        <div class="linear-tesbih-card" id="linearCard"
-             ontouchstart="triggerPressEffect('view3')" 
-             onmousedown="triggerPressEffect('view3')" 
-             onclick="increment()">
-            <div class="linear-track" id="linearTrack"></div>
-            <div class="linear-info">
-                <div class="linear-counter-val" id="counter3">0</div>
-                <div class="linear-hint" id="targetLabel3">/ 33</div>
+        <div class="drag-tesbih-card" id="dragCard">
+            <svg class="drag-track-svg" id="dragTrackSvg" viewBox="0 0 320 120">
+                <!-- Yatay Tesbih Çizgisi, Taneleri ve İmamet -->
+            </svg>
+            <div class="drag-info">
+                <div class="drag-counter-val" id="counter3">0</div>
+                <div class="drag-hint" data-i18n="drag_hint">Tesbihi aşağı veya yana doğru kaydırın</div>
             </div>
         </div>
     </div>
@@ -596,7 +568,6 @@
 </div>
 
 <script>
-    // Dil Sözlüğü
     const translations = {
         tr: {
             page_title: "Zikirmatik | Ayetin Vakti",
@@ -611,7 +582,9 @@
             modal_custom_label: "Özel Hedef Yazın:",
             modal_close: "Tamam",
             remainder_text: "Kalan: ",
-            reset_confirm: "Sayacı sıfırlamak istediğinize emin misiniz?"
+            reset_confirm: "Sayacı sıfırlamak istediğinize emin misiniz?",
+            hand_hint: "Parmak boğumlarına dokunarak zikir çekin",
+            drag_hint: "Tesbihi parmağınızla kaydırarak çekin"
         },
         en: {
             page_title: "Digital Tasbih | Ayetin Vakti",
@@ -626,7 +599,9 @@
             modal_custom_label: "Custom Target:",
             modal_close: "Done",
             remainder_text: "Remaining: ",
-            reset_confirm: "Are you sure you want to reset the counter?"
+            reset_confirm: "Are you sure you want to reset the counter?",
+            hand_hint: "Tap on finger joints to count",
+            drag_hint: "Swipe the tasbih with your finger"
         },
         ar: {
             page_title: "المسبحة الإلكترونية | آية الوقت",
@@ -641,7 +616,9 @@
             modal_custom_label: "هدف مخصص:",
             modal_close: "تم",
             remainder_text: "المتبقي: ",
-            reset_confirm: "هل أنت متأكد من رغبتك في إعادة ضبط العداد؟"
+            reset_confirm: "هل أنت متأكد من رغبتك في إعادة ضبط العداد؟",
+            hand_hint: "اضغط على عُقد الأصابع للعد",
+            drag_hint: "اسحب المسبحة بإصبعك للعد"
         }
     };
 
@@ -659,21 +636,15 @@
     const counterEl2 = document.getElementById('counter2');
     const counterEl3 = document.getElementById('counter3');
     const targetLabelEl1 = document.getElementById('targetLabel1');
-    const targetLabelEl2 = document.getElementById('targetLabel2');
-    const targetLabelEl3 = document.getElementById('targetLabel3');
     const remainderLabelEl1 = document.getElementById('remainderLabel1');
-    const clickAreaEl1 = document.getElementById('clickArea1');
-    const handCardEl = document.getElementById('handCard');
-    const linearCardEl = document.getElementById('linearCard');
     const tesbihSvg = document.getElementById('tesbihSvg');
-    const linearTrack = document.getElementById('linearTrack');
+    const handSvgContainer = document.getElementById('handSvgContainer');
+    const dragCard = document.getElementById('dragCard');
+    const dragTrackSvg = document.getElementById('dragTrackSvg');
     const themeBtn = document.getElementById('theme-btn');
 
-    // --- TEMA YÖNETİMİ ---
     function updateThemeButton(isLight) {
-        if (themeBtn) {
-            themeBtn.textContent = isLight ? '☀️' : '🌙';
-        }
+        if (themeBtn) themeBtn.textContent = isLight ? '☀️' : '🌙';
     }
 
     function setTheme(isLight) {
@@ -694,21 +665,15 @@
         setTheme(!isLight);
     }
 
-    // İlk yükleme tema durumu
     const savedThemeInitial = localStorage.getItem('theme');
     const systemPrefersDarkInitial = window.matchMedia('(prefers-color-scheme: dark)').matches;
     const isLightInitial = (savedThemeInitial === 'light') || (!savedThemeInitial && !systemPrefersDarkInitial);
-
     if (isLightInitial) {
         document.documentElement.classList.add('light-mode');
         document.body.classList.add('light-mode');
-    } else {
-        document.documentElement.classList.remove('light-mode');
-        document.body.classList.remove('light-mode');
     }
     updateThemeButton(isLightInitial);
 
-    // --- GÖRÜNÜM DEĞİŞTİRME ---
     function toggleViewMode() {
         currentViewMode = currentViewMode >= 3 ? 1 : currentViewMode + 1;
         localStorage.setItem('zikir_view_mode', currentViewMode);
@@ -720,124 +685,182 @@
         document.getElementById('view1').style.display = currentViewMode === 1 ? 'flex' : 'none';
         document.getElementById('view2').style.display = currentViewMode === 2 ? 'flex' : 'none';
         document.getElementById('view3').style.display = currentViewMode === 3 ? 'flex' : 'none';
+        if (currentViewMode === 2) renderHandView();
+        if (currentViewMode === 3) renderDragTesbih();
     }
 
-    // --- SES ÜRETİCİ ---
     function playClickSound(freq = 650, duration = 0.06) {
         try {
-            if (!audioCtx) {
-                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            }
-            if (audioCtx.state === 'suspended') {
-                audioCtx.resume();
-            }
+            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            if (audioCtx.state === 'suspended') audioCtx.resume();
             const osc = audioCtx.createOscillator();
             const gain = audioCtx.createGain();
             osc.type = 'triangle';
             osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-            
             gain.gain.setValueAtTime(0.25, audioCtx.currentTime);
             gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
-            
             osc.connect(gain);
             gain.connect(audioCtx.destination);
             osc.start();
             osc.stop(audioCtx.currentTime + duration);
-        } catch (e) {
-            console.log("Ses yürütülemedi:", e);
-        }
+        } catch (e) {}
     }
 
-    // --- BASMA ANİMASYONU ---
-    function triggerPressEffect(viewId) {
-        if (viewId === 'view1') {
-            clickAreaEl1.classList.add('pressed');
-            setTimeout(() => clickAreaEl1.classList.remove('pressed'), 100);
-        } else if (viewId === 'view2') {
-            handCardEl.classList.add('pressed');
-            setTimeout(() => handCardEl.classList.remove('pressed'), 120);
-        } else if (viewId === 'view3') {
-            linearCardEl.style.transform = 'scale(0.97)';
-            setTimeout(() => linearCardEl.style.transform = 'scale(1)', 100);
-        }
-    }
-
-    // --- GÖRÜNÜM 1: DAİRESEL BONCUKLAR ---
+    // --- GÖRÜNÜM 1: DAİRESEL TESBİH ---
     function renderTesbihBeads() {
         tesbihSvg.innerHTML = '';
-        let centerX = 150;
-        let centerY = 150;
-        let radius = 125;
-        
+        let centerX = 150, centerY = 150, radius = 125;
         let totalBeads = target > 60 ? 60 : target;
         if (totalBeads < 20) totalBeads = 33;
-
         let currentProgressInTarget = count % target;
 
         for (let i = 0; i < totalBeads; i++) {
             let angle = (i * 2 * Math.PI) / totalBeads;
             let x = centerX + radius * Math.cos(angle);
             let y = centerY + radius * Math.sin(angle);
-
             let circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
             circle.setAttribute("cx", x);
             circle.setAttribute("cy", y);
             circle.setAttribute("r", "4.5");
             circle.setAttribute("class", "bead");
 
-            let activeBeadThreshold = Math.floor((currentProgressInTarget / target) * totalBeads);
-            
-            if (i < activeBeadThreshold || (currentProgressInTarget > 0 && i === 0)) {
+            let activeThreshold = Math.floor((currentProgressInTarget / target) * totalBeads);
+            if (i < activeThreshold || (currentProgressInTarget > 0 && i === 0)) {
                 circle.setAttribute("fill", "var(--accent-color)");
                 circle.setAttribute("r", "5.5");
             } else {
                 circle.setAttribute("fill", "var(--bead-inactive)");
             }
-
             tesbihSvg.appendChild(circle);
         }
     }
 
-    // --- GÖRÜNÜM 3: YATAY BONCUKLAR ---
-    function renderLinearBeads() {
-        linearTrack.innerHTML = '';
-        let totalBeads = target > 15 ? 15 : target;
-        let currentProgressInTarget = count % target;
+    // --- GÖRÜNÜM 2: PARMAK VE BOĞUMLAR ---
+    function renderHandView() {
+        let currentProgress = count % target;
+        // Her parmakta 3 boğum var (İşaret, Orta, Yüzük, Serçe = 12 boğum). 
+        // 33'lük döngüye tam uyarlamak için her boğuma basıldığında zikir artar.
+        
+        let svgHTML = `<svg viewBox="0 0 300 200" style="width:100%; height:100%;">`;
+        // El tabanı / avuç içi çizgisel taslak
+        svgHTML += `<path d="M90 170 L90 120 C90 100 110 90 130 90 L170 90 C190 90 210 100 210 120 L210 170 Z" fill="none" stroke="var(--border-color)" stroke-width="3" stroke-dasharray="4 4"/>`;
 
-        for (let i = 0; i < totalBeads; i++) {
-            let bead = document.createElement('div');
-            bead.className = 'linear-bead';
+        // 4 Parmak X koordinatları
+        const fingers = [
+            { name: 'serce', x: 100, baseY: 110 },
+            { name: 'yuzuk', x: 130, baseY: 95 },
+            { name: 'orta',  x: 160, baseY: 90 },
+            { name: 'isaret',x: 190, baseY: 100 }
+        ];
+
+        let jointIndex = 0;
+        fingers.forEach((f, fIdx) => {
+            // Parmak uzantısı
+            svgHTML += `<line x1="${f.x}" y1="${f.baseY + 50}" x2="${f.x}" y2="${f.baseY}" stroke="var(--border-color)" stroke-width="6" stroke-linecap="round"/>`;
             
-            let activeThreshold = Math.floor((currentProgressInTarget / target) * totalBeads);
-            if (i < activeThreshold || (currentProgressInTarget > 0 && i === 0)) {
-                bead.classList.add('active');
+            // 3 Boğum noktası
+            for (let j = 0; j < 3; j++) {
+                let jY = f.baseY + (j * 15);
+                let isActive = jointIndex < (currentProgress % 12);
+                let fillColor = isActive ? 'var(--accent-color)' : 'var(--bead-inactive)';
+                
+                svgHTML += `<g class="phalanx-node" onclick="increment()">
+                    <circle cx="${f.x}" cy="${jY}" r="7" fill="${fillColor}" stroke="var(--card-bg)" stroke-width="2"/>
+                </g>`;
+                jointIndex++;
             }
-            linearTrack.appendChild(bead);
-        }
+        });
+
+        svgHTML += `</svg>`;
+        handSvgContainer.innerHTML = svgHTML;
     }
 
-    // --- GÖRÜNÜM & HESAPLAMA GÜNCELLEME ---
+
+    // --- GÖRÜNÜM 3: KAYDIRMALI GERÇEKÇİ TESBİH ---
+    function renderDragTesbih() {
+        let currentProgressInTarget = count % target;
+        let totalDisplayBeads = 14;
+        let svgHTML = `<svg viewBox="0 0 320 120" style="width:100%; height:100%;">`;
+        
+        // Tesbih İpi
+        svgHTML += `<path d="M 20 60 Q 160 90 300 60" fill="none" stroke="var(--border-color)" stroke-width="2"/>`;
+
+        // İmameli Başlık / Püskül sağda
+        svgHTML += `<rect x="290" y="45" width="8" height="30" rx="3" fill="var(--accent-color)"/>`;
+        svgHTML += `<circle cx="294" cy="40" r="4" fill="var(--accent-color)"/>`;
+
+        // Boncuklar
+        let step = 260 / totalDisplayBeads;
+        let activeThreshold = Math.floor((currentProgressInTarget / target) * totalDisplayBeads);
+
+        for (let i = 0; i < totalDisplayBeads; i++) {
+            let bx = 30 + (i * step);
+            let by = 60 + Math.sin(i * 0.5) * 12; // Eğrisel yay görünümü
+
+            let isActive = i < activeThreshold;
+            let fillColor = isActive ? 'var(--accent-color)' : 'var(--bead-inactive)';
+            let rSize = isActive ? 7 : 5.5;
+
+            svgHTML += `<circle cx="${bx}" cy="${by}" r="${rSize}" fill="${fillColor}" />`;
+        }
+
+        svgHTML += `</svg>`;
+        dragTrackSvg.innerHTML = svgHTML;
+    }
+
+    // Dokunmatik / Fare ile Kaydırma (Swipe) Algılama
+    let touchStartY = 0;
+    let touchStartX = 0;
+
+    dragCard.addEventListener('touchstart', (e) => {
+        touchStartY = e.touches[0].clientY;
+        touchStartX = e.touches[0].clientX;
+    }, {passive: true});
+
+    dragCard.addEventListener('touchmove', (e) => {
+        let diffY = e.touches[0].clientY - touchStartY;
+        let diffX = e.touches[0].clientX - touchStartX;
+        if (Math.abs(diffY) > 25 || Math.abs(diffX) > 25) {
+            increment();
+            touchStartY = e.touches[0].clientY;
+            touchStartX = e.touches[0].clientX;
+        }
+    }, {passive: true});
+
+    // Bilgisayar için mouse sürükleme desteği
+    let isMouseDown = false;
+    dragCard.addEventListener('mousedown', (e) => {
+        isMouseDown = true;
+        touchStartY = e.clientY;
+    });
+    window.addEventListener('mouseup', () => { isMouseDown = false; });
+    dragCard.addEventListener('mousemove', (e) => {
+        if (!isMouseDown) return;
+        let diffY = e.clientY - touchStartY;
+        if (Math.abs(diffY) > 20) {
+            increment();
+            touchStartY = e.clientY;
+        }
+    });
+
+
     function updateDisplay() {
         let currentInLoop = count % target;
         let remainder = target - currentInLoop;
         if (remainder === target && count > 0) remainder = 0;
 
-        // Metinleri güncelle
         counterEl1.innerText = currentInLoop;
         targetLabelEl1.innerText = `/ ${target}`;
         remainderLabelEl1.innerText = `${t.remainder_text}${remainder}`;
 
         counterEl2.innerText = currentInLoop;
-        targetLabelEl2.innerText = `/ ${target}`;
-
         counterEl3.innerText = currentInLoop;
-        targetLabelEl3.innerText = `${t.remainder_text}${remainder} (${currentInLoop} / ${target})`;
 
         if (currentViewMode === 1) renderTesbihBeads();
-        if (currentViewMode === 3) renderLinearBeads();
+        if (currentViewMode === 2) renderHandView();
+        if (currentViewMode === 3) renderDragTesbih();
     }
 
-    // --- HEDEF YÖNETİMİ ---
     function openTargetModal() {
         targetModal.style.display = 'flex';
         if (![33, 66, 99, 100].includes(target)) {
@@ -854,9 +877,7 @@
     }
 
     function closeTargetModalOutside(event) {
-        if (event.target === targetModal) {
-            closeTargetModal();
-        }
+        if (event.target === targetModal) closeTargetModal();
     }
 
     function setTarget(val) {
@@ -882,16 +903,12 @@
         [33, 66, 99, 100].forEach(num => {
             const btn = document.getElementById(`btn${num}`);
             if (btn) {
-                if (target === num) {
-                    btn.classList.add('active');
-                } else {
-                    btn.classList.remove('active');
-                }
+                if (target === num) btn.classList.add('active');
+                else btn.classList.remove('active');
             }
         });
     }
 
-    // --- SAYAÇ İŞLEMLERİ ---
     function increment() {
         count++;
         localStorage.setItem('zikir_count', count);
@@ -901,7 +918,6 @@
         } else {
             playClickSound(650, 0.06);
         }
-
         updateDisplay();
     }
 
@@ -914,12 +930,10 @@
         }
     }
 
-    // Başlangıç Kurulumu
     window.onload = () => {
         target = parseInt(localStorage.getItem('zikir_target')) || 33;
         currentViewMode = parseInt(localStorage.getItem('zikir_view_mode')) || 1;
 
-        // Statik metinleri dile göre yerleştir
         document.querySelectorAll('[data-i18n]').forEach(el => {
             const key = el.getAttribute('data-i18n');
             if (t[key]) {
