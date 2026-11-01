@@ -196,6 +196,38 @@
         .custom-target-box label { font-size: 0.85rem; color: var(--text-muted); }
         .custom-input { width: 100%; padding: 10px; border-radius: 10px; background-color: var(--bg-color); border: 1px solid var(--border-color); color: var(--text-color); font-size: 1rem; outline: none; text-align: center; user-select: text; -webkit-user-select: text; }
         .modal-close-btn { background-color: var(--accent-color); color: #fff; border: none; padding: 12px; border-radius: 12px; font-weight: 600; cursor: pointer; margin-top: 4px; }
+
+        /* Görünüm modu seçici */
+        .mode-bar { width: 100%; display: flex; gap: 6px; margin-bottom: 10px; padding: 4px; background: var(--btn-bg); border: 1px solid var(--border-color); border-radius: 14px; }
+        [dir="rtl"] .mode-bar { flex-direction: row-reverse; }
+        .mode-item { flex: 1 1 0; min-width: 0; padding: 8px 4px; border-radius: 10px; border: 1px solid transparent; background: transparent; color: var(--text-muted); font: inherit; font-size: 0.82rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px; white-space: nowrap; overflow: hidden; }
+        .mode-item.active { color: var(--accent-color); border-color: var(--accent-color); background: var(--card-bg); }
+
+        .tesbih-wrapper { touch-action: manipulation; }
+        .bead-canvas, .finger-layer { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
+
+        /* 2. mod: parmak */
+        .finger-layer { z-index: 3; overflow: visible; }
+        .tesbih-wrapper.mode-finger .finger-layer { display: block; }
+        .finger {
+            position: absolute; left: 168px; top: 204px; width: 76px; height: 124px; transform-origin: 38px 2px;
+            transform: rotate(-28deg) scale(1.1) translateY(10px); filter: drop-shadow(10px 14px 9px rgba(0, 0, 0, 0.28));
+            -webkit-mask-image: linear-gradient(to bottom, #000 0, #000 55%, transparent 100%); mask-image: linear-gradient(to bottom, #000 0, #000 55%, transparent 100%);
+        }
+        .finger-float { width: 100%; height: 100%; animation: fingerFloat 2.4s ease-in-out infinite; }
+        .finger svg { display: block; width: 100%; height: 100%; }
+        @keyframes fingerFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
+        .tap-ripple { position: absolute; left: 206px; top: 206px; width: 14px; height: 14px; margin: -7px 0 0 -7px; border: 2px solid var(--accent-color); border-radius: 50%; pointer-events: none; }
+        @media (prefers-reduced-motion: reduce) { .finger-float { animation: none; } }
+
+        /* 3. mod: gerçekçi tesbih */
+        .tesbih-wrapper.mode-bead { width: min(330px, 100%); height: auto; aspect-ratio: 1 / 1; }
+        .tesbih-wrapper.mode-bead .tesbih-svg { display: none; }
+        .tesbih-wrapper.mode-bead .bead-canvas { display: block; }
+        .tesbih-wrapper.mode-bead .click-area { width: 52%; height: 52%; border-width: 2px; background: color-mix(in srgb, var(--card-bg) 80%, transparent); box-shadow: none; }
+        .bead-picker { display: none; gap: 12px; justify-content: center; align-items: center; width: 100%; margin: -4px 0 12px; }
+        .bead-sw { width: 30px; height: 30px; padding: 0; border-radius: 50%; border: 0; cursor: pointer; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35), inset 0 -3px 5px rgba(0, 0, 0, 0.35); }
+        .bead-sw.active { box-shadow: 0 0 0 2px var(--bg-color), 0 0 0 4px var(--accent-color); }
     </style>
 </head>
 <body>
@@ -217,14 +249,37 @@
         <p data-i18n="brand_subtitle">Ayetin Vakti</p>
     </div>
 
-    <div class="tesbih-wrapper">
+    <div class="mode-bar" id="modeBar" role="group">
+        <button type="button" class="mode-item" data-mode="classic"><span aria-hidden="true">◎</span><span data-i18n="mode_classic">Klasik</span></button>
+        <button type="button" class="mode-item" data-mode="finger"><span aria-hidden="true">☝️</span><span data-i18n="mode_finger">Parmak</span></button>
+        <button type="button" class="mode-item" data-mode="bead"><span aria-hidden="true">📿</span><span data-i18n="mode_bead">Tesbih</span></button>
+    </div>
+    <div class="bead-picker" id="beadPicker"></div>
+
+    <div class="tesbih-wrapper" id="stage">
         <svg class="tesbih-svg" viewBox="0 0 300 300" id="tesbihSvg"></svg>
+        <canvas class="bead-canvas" id="beadCanvas" aria-hidden="true"></canvas>
 
         <button type="button" class="click-area" id="clickArea" aria-label="+1" aria-live="polite">
             <div class="counter-value" id="counter">0</div>
             <div class="counter-target-label" id="targetLabel">/ 33</div>
             <div class="sub-counter" id="remainderLabel"></div>
         </button>
+        <div class="finger-layer" id="fingerLayer" aria-hidden="true">
+            <div class="finger" id="finger"><div class="finger-float">
+                <svg viewBox="0 0 76 124" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <linearGradient id="skinG" x1="0" x2="1" y1="0" y2="0"><stop offset="0" stop-color="#c28660"/><stop offset=".3" stop-color="#e8b794"/><stop offset=".58" stop-color="#f0c6a6"/><stop offset="1" stop-color="#bd8260"/></linearGradient>
+                        <linearGradient id="nailG" x1="0" x2="1" y1="0" y2="1"><stop offset="0" stop-color="#fbe6df"/><stop offset="1" stop-color="#eebdae"/></linearGradient>
+                    </defs>
+                    <path d="M10 124 V38 C10 12 22 2 38 2 C54 2 66 12 66 38 V124 Z" fill="url(#skinG)" stroke="rgba(90,50,30,.35)" stroke-width="1"/>
+                    <path d="M22 17 C22 10 28 7 38 7 C48 7 54 10 54 17 V46 C54 50 50 52 38 52 C26 52 22 50 22 46 Z" fill="url(#nailG)" stroke="rgba(150,90,80,.45)"/>
+                    <path d="M28 14 C32 11 40 10 46 12" stroke="rgba(255,255,255,.75)" stroke-width="2" fill="none" stroke-linecap="round"/>
+                    <path d="M24 55 C30 58 46 58 52 55" stroke="rgba(150,90,60,.3)" stroke-width="1.5" fill="none"/>
+                    <path d="M16 88 Q38 94 60 88 M17 100 Q38 105 59 100" stroke="rgba(120,70,45,.35)" stroke-width="1.4" fill="none" stroke-linecap="round"/>
+                </svg>
+            </div></div>
+        </div>
     </div>
 
     <div class="controls">
@@ -262,6 +317,7 @@
             page_title: "Zikirmatik | Ayetin Vakti", home_title: "Ana Sayfa", theme_title: "Tema Değiştir",
             main_title: "Zikirmatik", brand_subtitle: "Ayetin Vakti",
             dhikr_subhanallah: "Sübhanallah", dhikr_elhamdulillah: "Elhamdülillah", dhikr_allahuakber: "Allahu Ekber",
+            mode_classic: "Klasik", mode_finger: "Parmak", mode_bead: "Tesbih", mode_label: "Görünüm", mat_amber: "Kehribar", mat_ebony: "Abanoz", mat_rosewood: "Gül ağacı", mat_pearl: "İnci", mat_emerald: "Zümrüt",
             btn_reset: "↺ Sıfırla", btn_target: "🎯 Hedef Seç", btn_undo: "↶ Geri Al",
             sound_on: "🔊 Ses", sound_off: "🔇 Ses", vib_on: "📳 Titreşim", vib_off: "📴 Titreşim",
             modal_title: "Hedef Seçiniz", modal_custom_label: "Özel Hedef Yazın:", modal_close: "Tamam",
@@ -272,6 +328,7 @@
             page_title: "Digital Tasbih | Ayetin Vakti", home_title: "Home", theme_title: "Toggle Theme",
             main_title: "Tasbih Counter", brand_subtitle: "Ayetin Vakti",
             dhikr_subhanallah: "Subhanallah", dhikr_elhamdulillah: "Alhamdulillah", dhikr_allahuakber: "Allahu Akbar",
+            mode_classic: "Classic", mode_finger: "Finger", mode_bead: "Beads", mode_label: "View", mat_amber: "Amber", mat_ebony: "Ebony", mat_rosewood: "Rosewood", mat_pearl: "Pearl", mat_emerald: "Emerald",
             btn_reset: "↺ Reset", btn_target: "🎯 Set Target", btn_undo: "↶ Undo",
             sound_on: "🔊 Sound", sound_off: "🔇 Sound", vib_on: "📳 Vibration", vib_off: "📴 Vibration",
             modal_title: "Select Target", modal_custom_label: "Custom Target:", modal_close: "Done",
@@ -282,6 +339,7 @@
             page_title: "المسبحة الإلكترونية | آية الوقت", home_title: "الرئيسية", theme_title: "تغيير المظهر",
             main_title: "السبحة", brand_subtitle: "آية الوقت",
             dhikr_subhanallah: "سُبْحَانَ اللَّهِ", dhikr_elhamdulillah: "الْحَمْدُ لِلَّهِ", dhikr_allahuakber: "اللَّهُ أَكْبَرُ",
+            mode_classic: "كلاسيكي", mode_finger: "الإصبع", mode_bead: "السبحة", mode_label: "العرض", mat_amber: "كهرمان", mat_ebony: "أبنوس", mat_rosewood: "خشب الورد", mat_pearl: "لؤلؤ", mat_emerald: "زمرد",
             btn_reset: "↺ تصفير", btn_target: "🎯 اختر الهدف", btn_undo: "↶ تراجع",
             sound_on: "🔊 الصوت", sound_off: "🔇 الصوت", vib_on: "📳 الاهتزاز", vib_off: "📴 الاهتزاز",
             modal_title: "اختر الهدف", modal_custom_label: "هدف مخصص:", modal_close: "تم",
@@ -371,6 +429,202 @@
     function toggleSound() { soundOn = !soundOn; localStorage.setItem('zikir_sound', soundOn ? '1' : '0'); updateToolButtons(); }
     function toggleVib() { vibOn = !vibOn; localStorage.setItem('zikir_vib', vibOn ? '1' : '0'); updateToolButtons(); if (vibOn) haptic(30); }
 
+
+    // ===================== GÖRÜNÜM MODLARI =====================
+    const TAU = Math.PI * 2;
+    const MODES = ['classic', 'finger', 'bead'];
+    const stage = document.getElementById('stage');
+    const beadCanvas = document.getElementById('beadCanvas');
+    const fingerEl = document.getElementById('finger');
+    const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let mode = MODES.includes(localStorage.getItem('zikir_mode')) ? localStorage.getItem('zikir_mode') : 'classic';
+
+    // --- Gerçekçi tesbih: 33 tane + imame (2 yuvalık), her dokunuşta zincir bir yuva döner ---
+    const BV = 330, BC = 165, BR = 104, SLOTS = 35, STEP = TAU / SLOTS, PITCH = BR * STEP, BRAD = PITCH * 0.47;
+    const MATERIALS = {
+        amber:    { hi: '#fff0b8', mid: '#f4a828', base: '#c9740e', dark: '#5e2f04', glow: '255,205,90', glowA: 0.5, spec: 1, rim: 0.14, edge: 0.42, grain: 0, thread: '#3b2a1a', tassel: ['#b3261e', '#e2b34a'] },
+        ebony:    { hi: '#8b8e97', mid: '#2c2d33', base: '#15161a', dark: '#020203', glow: '130,140,170', glowA: 0.1, spec: 1.15, rim: 0.2, edge: 0.3, grain: 0, thread: '#8a6d3b', tassel: ['#a1211b', '#d4a93c'] },
+        rosewood: { hi: '#d09574', mid: '#8b4a32', base: '#5e2a1a', dark: '#240c06', glow: '210,120,80', glowA: 0.16, spec: 0.7, rim: 0.1, edge: 0.45, grain: 1, thread: '#2c1d12', tassel: ['#1f5c3a', '#d9b25a'] },
+        pearl:    { hi: '#ffffff', mid: '#f3eee6', base: '#d9d1c6', dark: '#857d71', glow: '255,215,235', glowA: 0.35, spec: 0.9, rim: 0.2, edge: 0.3, grain: 0, thread: '#a89f93', tassel: ['#e8e0d0', '#c8a45a'] },
+        emerald:  { hi: '#c2f7da', mid: '#20ad74', base: '#0a6b47', dark: '#022a1b', glow: '120,255,190', glowA: 0.42, spec: 1, rim: 0.14, edge: 0.42, grain: 0, thread: '#1c2a22', tassel: ['#0b6b46', '#e0be62'] }
+    };
+    const GOLD = { hi: '#fff3bf', mid: '#e4b84a', base: '#b8872a', dark: '#5a3d0c', glow: '255,230,150', glowA: 0.2, spec: 1, rim: 0.12, edge: 0.4, grain: 0 };
+    let beadMat = MATERIALS[localStorage.getItem('zikir_bead')] ? localStorage.getItem('zikir_bead') : 'amber';
+    let rot = 0, rotV = 0, rotT = 0, sway = 0, swayV = 0, animId = 0, lastT = 0, bK = 1;
+    rot = rotT = (count * STEP) % TAU;
+    const rnd = n => { const x = Math.sin(n * 127.1 + 311.7) * 43758.5453; return x - Math.floor(x); };
+
+    function resizeBeadCanvas() {
+        const w = stage.clientWidth; if (!w) return;
+        const dpr = Math.min(window.devicePixelRatio || 1, 3);
+        beadCanvas.width = beadCanvas.height = Math.round(w * dpr);
+        bK = w * dpr / BV;
+    }
+
+    // Işık sol-üstten; küre (ya da imame elipsi) katman katman boyanır
+    function drawBody(c, x, y, rx, ry, ang, mat, seed) {
+        const ca = Math.cos(ang), sa = Math.sin(ang), sc = Math.min(1.1, ry / BRAD);
+        c.save(); c.translate(x, y); c.rotate(ang);
+        c.shadowColor = 'rgba(0,0,0,0.42)'; c.shadowBlur = 7 * bK * sc; c.shadowOffsetX = 3 * bK * sc; c.shadowOffsetY = 4.5 * bK * sc;
+        c.fillStyle = mat.base; c.beginPath(); c.ellipse(0, 0, rx, ry, 0, 0, TAU); c.fill(); c.restore();
+
+        c.save(); c.translate(x, y); c.rotate(ang); c.scale(rx, ry);
+        c.beginPath(); c.arc(0, 0, 1, 0, TAU); c.clip();
+        const vx = -0.36 * ry, vy = -0.40 * ry, lx = (ca * vx + sa * vy) / rx, ly = (-sa * vx + ca * vy) / ry;
+        let g = c.createRadialGradient(lx, ly, 0.03, 0, 0, 1.05);
+        g.addColorStop(0, mat.hi); g.addColorStop(0.22, mat.mid); g.addColorStop(0.65, mat.base); g.addColorStop(1, mat.dark);
+        c.fillStyle = g; c.fillRect(-1.2, -1.2, 2.4, 2.4);
+        g = c.createRadialGradient(-lx * 0.9, -ly * 0.9, 0, -lx * 0.9, -ly * 0.9, 0.75);   // içten geçen ışık
+        g.addColorStop(0, `rgba(${mat.glow},${mat.glowA})`); g.addColorStop(1, `rgba(${mat.glow},0)`);
+        c.fillStyle = g; c.fillRect(-1.2, -1.2, 2.4, 2.4);
+        if (mat.grain) {                                                                      // ağaç damarı
+            c.save(); c.rotate(seed * 1.7); c.lineCap = 'round';
+            for (let i = 0; i < 7; i++) {
+                const yy = -0.9 + i * 0.3 + (rnd(seed * 7 + i) - 0.5) * 0.18;
+                c.strokeStyle = `rgba(25,8,3,${0.14 + 0.12 * rnd(seed * 3 + i)})`; c.lineWidth = 0.03 + 0.05 * rnd(seed * 5 + i);
+                c.beginPath(); c.moveTo(-1.1, yy); c.bezierCurveTo(-0.4, yy - 0.2 * rnd(seed + i), 0.4, yy + 0.2 * rnd(seed * 2 + i), 1.1, yy); c.stroke();
+            }
+            c.restore();
+        }
+        g = c.createRadialGradient(lx * 0.35, ly * 0.35, 0.45, 0, 0, 1.02);                    // kenar koyulaşması
+        g.addColorStop(0, 'rgba(0,0,0,0)'); g.addColorStop(1, `rgba(0,0,0,${mat.edge})`);
+        c.fillStyle = g; c.fillRect(-1.2, -1.2, 2.4, 2.4);
+        g = c.createRadialGradient(-lx * 0.95, -ly * 0.95, 0, -lx * 0.95, -ly * 0.95, 0.55);   // alttan yansıyan ışık
+        g.addColorStop(0, `rgba(255,255,255,${mat.rim})`); g.addColorStop(1, 'rgba(255,255,255,0)');
+        c.fillStyle = g; c.fillRect(-1.2, -1.2, 2.4, 2.4);
+        c.save(); c.translate(lx * 1.02, ly * 1.05); c.rotate(-0.6 - ang); c.scale(0.34, 0.2);   // parlama
+        g = c.createRadialGradient(0, 0, 0, 0, 0, 1);
+        g.addColorStop(0, `rgba(255,255,255,${0.95 * mat.spec})`); g.addColorStop(0.5, `rgba(255,255,255,${0.35 * mat.spec})`); g.addColorStop(1, 'rgba(255,255,255,0)');
+        c.fillStyle = g; c.beginPath(); c.arc(0, 0, 1, 0, TAU); c.fill(); c.restore();
+        c.lineWidth = 0.035; c.strokeStyle = 'rgba(0,0,0,0.28)'; c.beginPath(); c.arc(0, 0, 1, 0, TAU); c.stroke();
+        c.restore();
+    }
+
+    function drawTassel(c, mat) {
+        const th = Math.PI / 2 + rot, ta = th + sway;
+        const ax = BC + Math.cos(th) * (BR + 9), ay = BC + Math.sin(th) * (BR + 9);
+        const dx = Math.cos(ta), dy = Math.sin(ta), px = -dy, py = dx;
+        const bx = ax + dx * 15, by = ay + dy * 15, n = 30;
+        for (let pass = 0; pass < 2; pass++) {
+            c.save(); c.lineCap = 'round';
+            if (pass === 0) c.translate(2, 3);
+            for (let i = 0; i < n; i++) {
+                const f = i / (n - 1) - 0.5, len = 30 + 9 * rnd(i + 3), a = ta + f * 0.42 + (rnd(i) - 0.5) * 0.05;
+                c.strokeStyle = pass === 0 ? 'rgba(0,0,0,0.26)' : (i % 3 === 0 ? mat.tassel[1] : mat.tassel[0]);
+                c.lineWidth = pass === 0 ? 1.7 : 1.2; c.globalAlpha = pass === 0 ? 1 : 0.94;
+                c.beginPath(); c.moveTo(bx, by);
+                c.quadraticCurveTo(bx + dx * len * 0.45 + px * f * len * 0.1, by + dy * len * 0.45 + py * f * len * 0.1, bx + Math.cos(a) * len, by + Math.sin(a) * len);
+                c.stroke();
+            }
+            c.restore();
+        }
+        c.save(); c.strokeStyle = mat.tassel[1]; c.lineWidth = 2.2; c.lineCap = 'round';
+        c.beginPath(); c.moveTo(ax - dx * 3, ay - dy * 3); c.lineTo(ax + dx * 7, ay + dy * 7); c.stroke(); c.restore();
+        drawBody(c, ax + dx * 8, ay + dy * 8, 3.6, 3.6, 0, GOLD, 99);
+        c.save(); c.translate(ax + dx * 13.5, ay + dy * 13.5); c.rotate(ta + Math.PI / 2);   // sarma bağ
+        c.fillStyle = mat.tassel[1]; c.strokeStyle = 'rgba(0,0,0,0.4)'; c.lineWidth = 0.8;
+        c.fillRect(-4.5, -2.5, 9, 5); c.strokeRect(-4.5, -2.5, 9, 5);
+        c.beginPath(); c.moveTo(-1.5, -2.5); c.lineTo(-1.5, 2.5); c.moveTo(1.5, -2.5); c.lineTo(1.5, 2.5); c.stroke(); c.restore();
+    }
+
+    function drawBeadScene() {
+        if (!stage.clientWidth || !beadCanvas.width) return;
+        const c = beadCanvas.getContext('2d'), mat = MATERIALS[beadMat];
+        c.setTransform(bK, 0, 0, bK, 0, 0); c.clearRect(0, 0, BV, BV);
+        c.save(); c.lineWidth = 2.2; c.strokeStyle = mat.thread;
+        c.shadowColor = 'rgba(0,0,0,0.35)'; c.shadowBlur = 3 * bK; c.shadowOffsetX = 1.5 * bK; c.shadowOffsetY = 2.5 * bK;
+        c.beginPath(); c.arc(BC, BC, BR, 0, TAU); c.stroke(); c.restore();
+        drawTassel(c, mat);
+        const at = s => Math.PI / 2 + rot + (s - 0.5) * STEP;
+        for (let s = 2; s < SLOTS; s++) { const a = at(s); drawBody(c, BC + BR * Math.cos(a), BC + BR * Math.sin(a), BRAD, BRAD, 0, mat, s); }
+        const ai = at(0.5);
+        drawBody(c, BC + BR * Math.cos(ai), BC + BR * Math.sin(ai), PITCH * 0.99, BRAD * 1.16, ai + Math.PI / 2, mat, 1);
+    }
+
+    function stepAnim(ts) {
+        animId = 0;
+        if (!lastT) lastT = ts;
+        const dt = Math.min(0.05, (ts - lastT) / 1000), h = 1 / 240; lastT = ts;
+        for (let i = Math.max(1, Math.round(dt / h)); i > 0; i--) {
+            const a = 140 * (rotT - rot) - 17 * rotV;                  // yay: hafif aşma ile yerine oturur
+            rotV += a * h; rot += rotV * h;
+            swayV += (-121 * sway - 2.4 * swayV - a) * h; sway += swayV * h;   // püskül atalet ile sallanır
+        }
+        sway = Math.max(-0.9, Math.min(0.9, sway));
+        if (Math.abs(rotT - rot) < 5e-4 && Math.abs(rotV) < 5e-3 && Math.abs(sway) < 2e-3 && Math.abs(swayV) < 2e-2) {
+            rot = rotT; sway = swayV = 0; lastT = 0; drawBeadScene(); return;
+        }
+        drawBeadScene(); animId = requestAnimationFrame(stepAnim);
+    }
+    function startAnim() { if (!animId) { lastT = 0; animId = requestAnimationFrame(stepAnim); } }
+    function beadAdvance(delta) {
+        rotT += delta;
+        if (mode !== 'bead') { rot = rotT; return; }
+        if (reduceMotion) { rot = rotT; drawBeadScene(); } else startAnim();
+    }
+    function beadReset() {
+        rot = ((rot % TAU) + TAU) % TAU; rotT = rot > Math.PI ? TAU : 0;
+        if (mode !== 'bead') { rot = rotT = 0; return; }
+        if (reduceMotion) { rot = rotT; drawBeadScene(); } else startAnim();
+    }
+
+    // Tahta/taş tesbih tıkırtısı: kısa gürültü patlaması + alçak tok vuruş
+    function knock(at, vol) {
+        const sr = audioCtx.sampleRate, len = Math.floor(sr * 0.06), buf = audioCtx.createBuffer(1, len, sr), d = buf.getChannelData(0);
+        for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 4);
+        const src = audioCtx.createBufferSource(), bp = audioCtx.createBiquadFilter(), g = audioCtx.createGain();
+        src.buffer = buf; bp.type = 'bandpass'; bp.frequency.value = 1500 + Math.random() * 700; bp.Q.value = 1.6; g.gain.value = 1.1 * vol;
+        src.connect(bp); bp.connect(g); g.connect(audioCtx.destination); src.start(at);
+        const o = audioCtx.createOscillator(), og = audioCtx.createGain(), f0 = 260 + Math.random() * 60;
+        o.type = 'sine'; o.frequency.setValueAtTime(f0, at); o.frequency.exponentialRampToValueAtTime(f0 * 0.5, at + 0.07);
+        og.gain.setValueAtTime(0.35 * vol, at); og.gain.exponentialRampToValueAtTime(0.0001, at + 0.08);
+        o.connect(og); og.connect(audioCtx.destination); o.start(at); o.stop(at + 0.09);
+    }
+    function playBeadClick(done) {
+        if (!soundOn) return;
+        try {
+            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            const now = audioCtx.currentTime; knock(now, 1); if (done) knock(now + 0.11, 0.8);
+        } catch (e) { console.log('Ses yürütülemedi:', e); }
+    }
+
+    // --- Parmak modu ---
+    function fingerTap() {
+        if (!fingerEl || !fingerEl.animate) return;
+        const idle = 'rotate(-28deg) scale(1.1) translateY(10px)', press = 'rotate(-28deg) scale(0.98) translateY(-3px)';
+        const shIdle = 'drop-shadow(10px 14px 9px rgba(0,0,0,0.28))', shPress = 'drop-shadow(3px 4px 3px rgba(0,0,0,0.42))';
+        fingerEl.animate([{ transform: idle, filter: shIdle }, { transform: press, filter: shPress, offset: 0.4 }, { transform: idle, filter: shIdle }], { duration: 170, easing: 'ease-out' });
+        if (reduceMotion) return;
+        const r = document.createElement('div'); r.className = 'tap-ripple'; document.getElementById('fingerLayer').appendChild(r);
+        const an = r.animate([{ transform: 'scale(1)', opacity: 0.7 }, { transform: 'scale(5)', opacity: 0 }], { duration: 450, easing: 'ease-out' });
+        an.onfinish = () => r.remove();
+    }
+
+    // --- Mod ve malzeme seçimi ---
+    function setMode(m) {
+        mode = MODES.includes(m) ? m : 'classic'; store.set('zikir_mode', mode);
+        stage.classList.toggle('mode-finger', mode === 'finger'); stage.classList.toggle('mode-bead', mode === 'bead');
+        document.getElementById('beadPicker').style.display = mode === 'bead' ? 'flex' : 'none';
+        document.querySelectorAll('.mode-item').forEach(el => el.classList.toggle('active', el.dataset.mode === mode));
+        if (mode === 'bead') { resizeBeadCanvas(); rot = rotT; sway = swayV = 0; drawBeadScene(); }
+    }
+    function buildBeadPicker() {
+        const box = document.getElementById('beadPicker'); box.textContent = '';
+        Object.keys(MATERIALS).forEach(k => {
+            const m = MATERIALS[k], b = document.createElement('button');
+            b.type = 'button'; b.className = 'bead-sw' + (k === beadMat ? ' active' : ''); b.dataset.mat = k;
+            b.title = t['mat_' + k] || k; b.setAttribute('aria-label', b.title);
+            b.style.background = `radial-gradient(circle at 32% 30%, ${m.hi}, ${m.mid} 38%, ${m.base} 70%, ${m.dark})`;
+            b.addEventListener('click', () => {
+                beadMat = k; store.set('zikir_bead', k);
+                box.querySelectorAll('.bead-sw').forEach(x => x.classList.toggle('active', x.dataset.mat === k));
+                drawBeadScene();
+            });
+            box.appendChild(b);
+        });
+    }
+
     // ===================== TESBİH HALKASI =====================
     let beadEls = [];
     function buildBeads() {
@@ -440,21 +694,25 @@
         store.set('zikir_count', count);
         const completed = loopValue(count, target) === target;
         if (completed) {
-            playClickSound(880, 0.25); haptic([80, 50, 80]);
+            if (mode === 'bead') playBeadClick(true); else playClickSound(880, 0.25);
+            haptic([80, 50, 80]);
             // Tesbihat: üç zikirden biri seçiliyse hedef dolunca sıradakine geç
             if (activeDhikr >= 0) { activeDhikr = (activeDhikr + 1) % 3; store.set('zikir_active', activeDhikr); }
         } else {
-            playClickSound(650, 0.06); haptic(12);
+            if (mode === 'bead') playBeadClick(false); else playClickSound(650, 0.06);
+            haptic(12);
         }
+        if (mode === 'finger') fingerTap();
+        beadAdvance(STEP);
         updateDisplay();
     }
     function undoCount() {
         if (count <= 0) return;
-        count--; store.set('zikir_count', count); haptic(10); updateDisplay();
+        count--; store.set('zikir_count', count); haptic(10); beadAdvance(-STEP); updateDisplay();
     }
     function resetCounter() {
         if (count === 0) return;
-        if (confirm(t.reset_confirm)) { count = 0; store.set('zikir_count', 0); updateDisplay(); }
+        if (confirm(t.reset_confirm)) { count = 0; store.set('zikir_count', 0); beadReset(); updateDisplay(); }
     }
     function selectDhikr(idx) {
         activeDhikr = (activeDhikr === idx) ? -1 : idx;       // aynısına tekrar dokunmak seçimi kaldırır
@@ -474,7 +732,10 @@
         document.title = t.page_title;
         updateThemeButton(); updateThemeColor(); updateToolButtons();
 
-        clickAreaEl.addEventListener('click', increment);
+        // Klasik modda yalnızca ortadaki düğme sayar; parmak ve tesbih modunda sahnenin her yerine dokunmak sayar
+        stage.addEventListener('click', e => { if (mode === 'classic' && !e.target.closest('#clickArea')) return; increment(); });
+        document.getElementById('modeBar').addEventListener('click', e => { const b = e.target.closest('.mode-item'); if (b) setMode(b.dataset.mode); });
+        window.addEventListener('resize', () => { if (mode === 'bead') { resizeBeadCanvas(); drawBeadScene(); } });
         clickAreaEl.addEventListener('mousedown', triggerPressEffect);
         document.getElementById('dhikrBar').addEventListener('click', e => {
             const b = e.target.closest('.sweet-dhikr-item'); if (b) selectDhikr(parseInt(b.dataset.idx, 10));
@@ -487,7 +748,7 @@
         });
         document.addEventListener('visibilitychange', () => { if (!document.hidden && count > 0) keepAwake(); });
 
-        buildBeads(); updateActiveButtonStates(); updateDisplay();
+        buildBeads(); buildBeadPicker(); updateActiveButtonStates(); updateDisplay(); setMode(mode);
     };
 </script>
 
