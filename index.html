@@ -232,12 +232,13 @@
 </head>
 <body>
 
-<div class="container">
-    <div class="navbar">
+<div class="navbar">
+    <div style="display:flex; align-items:center; gap:8px;">
         <a href="../" class="home-btn" title="Ana Sayfa" aria-label="Ana Sayfa" data-i18n-title="home_title">←</a>
-        <button class="icon-btn" data-drawer-toggle aria-label="Menü">☰</button>
-        <button class="theme-icon-btn" onclick="toggleTheme()" id="theme-btn" title="Tema Değiştir" aria-label="Tema Değiştir" data-i18n-title="theme_title">🌙</button>
+        <button class="theme-icon-btn" data-drawer-toggle aria-label="Menü" title="Menü">☰</button>
     </div>
+    <button class="theme-icon-btn" onclick="toggleTheme()" id="theme-btn" title="Tema Değiştir" aria-label="Tema Değiştir" data-i18n-title="theme_title">🌙</button>
+</div>
 
     <div class="sweet-dhikr-bar" id="dhikrBar">
         <button type="button" class="sweet-dhikr-item" data-idx="0" data-i18n="dhikr_subhanallah">Sübhanallah</button>
