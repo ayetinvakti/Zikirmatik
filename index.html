@@ -210,15 +210,28 @@
         .finger-layer { z-index: 3; overflow: visible; }
         .tesbih-wrapper.mode-finger .finger-layer { display: block; }
         .finger {
-            position: absolute; left: 168px; top: 204px; width: 76px; height: 124px; transform-origin: 38px 2px;
-            transform: rotate(-28deg) scale(1.1) translateY(10px); filter: drop-shadow(10px 14px 9px rgba(0, 0, 0, 0.28));
+            position: absolute; left: 114px; top: 182px; width: 76px; height: 124px; transform-origin: 38px 2px;
+            transform: rotate(-28deg) scale(0.92) translateY(12px); filter: drop-shadow(8px 12px 8px rgba(0, 0, 0, 0.30));
             -webkit-mask-image: linear-gradient(to bottom, #000 0, #000 55%, transparent 100%); mask-image: linear-gradient(to bottom, #000 0, #000 55%, transparent 100%);
         }
         .finger-float { width: 100%; height: 100%; animation: fingerFloat 2.4s ease-in-out infinite; }
         .finger svg { display: block; width: 100%; height: 100%; }
         @keyframes fingerFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
-        .tap-ripple { position: absolute; left: 206px; top: 206px; width: 14px; height: 14px; margin: -7px 0 0 -7px; border: 2px solid var(--accent-color); border-radius: 50%; pointer-events: none; }
+        .tap-ripple { position: absolute; left: 142px; top: 192px; width: 14px; height: 14px; margin: -7px 0 0 -7px; border: 2px solid var(--accent-color); border-radius: 50%; pointer-events: none; }
         @media (prefers-reduced-motion: reduce) { .finger-float { animation: none; } }
+
+
+        /* 2. mod: gerçekçi parmak sayacı (tally counter) */
+        .device-layer { display: none; position: absolute; left: 30px; top: 0; width: 240px; height: 300px; pointer-events: none; z-index: 1; }
+        .device-layer svg { display: block; width: 100%; height: 100%; direction: ltr; overflow: visible; filter: drop-shadow(0 12px 10px rgba(0, 0, 0, 0.35)); }
+        .tesbih-wrapper.mode-finger { height: 350px; }
+        .tesbih-wrapper.mode-finger .tesbih-svg { display: none; }
+        .tesbih-wrapper.mode-finger .device-layer { display: block; }
+        .tesbih-wrapper.mode-finger .click-area { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; border-radius: 12px; background: transparent; box-shadow: none; filter: none; transform: none; justify-content: flex-end; padding-bottom: 2px; }
+        .tesbih-wrapper.mode-finger .click-area:active, .tesbih-wrapper.mode-finger .click-area.pressed { transform: none; box-shadow: none; filter: none; }
+        .tesbih-wrapper.mode-finger .counter-value { display: none; }
+        .device-picker { display: none; flex-wrap: wrap; gap: 8px; justify-content: center; align-items: center; width: 100%; margin: -4px 0 12px; }
+        .device-picker .bead-sw { width: 28px; height: 28px; }
 
         /* 3. mod: gerçekçi tesbih */
         .tesbih-wrapper.mode-bead { width: min(330px, 100%); height: auto; aspect-ratio: 1 / 1; }
@@ -257,10 +270,57 @@
         <button type="button" class="mode-item" data-mode="bead"><span aria-hidden="true">📿</span><span data-i18n="mode_bead">Tesbih</span></button>
     </div>
     <div class="bead-picker" id="beadPicker"></div>
+    <div class="device-picker" id="devicePicker" role="group"></div>
 
     <div class="tesbih-wrapper" id="stage">
         <svg class="tesbih-svg" viewBox="0 0 300 300" id="tesbihSvg"></svg>
         <canvas class="bead-canvas" id="beadCanvas" aria-hidden="true"></canvas>
+        <div class="device-layer" id="deviceLayer" aria-hidden="true">
+            <svg viewBox="0 0 240 300" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <linearGradient id="devBodyG" x1="0.1" y1="0" x2="0.9" y2="1"><stop id="dg0" offset="0" stop-color="#ff7a6e"/><stop id="dg1" offset="0.5" stop-color="#d9291f"/><stop id="dg2" offset="1" stop-color="#7a0e0a"/></linearGradient>
+                    <radialGradient id="devEdgeG" cx="0.5" cy="0.45" r="0.62"><stop offset="0.55" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity="0.34"/></radialGradient>
+                    <linearGradient id="devStrapG" x1="0" x2="1" y1="0" y2="0"><stop offset="0" stop-color="#c9cdd4"/><stop offset="0.25" stop-color="#f8f9fb"/><stop offset="0.75" stop-color="#eceef2"/><stop offset="1" stop-color="#bcc1c9"/></linearGradient>
+                    <radialGradient id="devChromeG" cx="0.35" cy="0.3" r="0.85"><stop offset="0" stop-color="#ffffff"/><stop offset="0.25" stop-color="#e7eaef"/><stop offset="0.62" stop-color="#9ba1ab"/><stop offset="1" stop-color="#545a63"/></radialGradient>
+                    <linearGradient id="devDishG" x1="0.2" y1="0.1" x2="0.8" y2="0.95"><stop offset="0" stop-color="#6b717b"/><stop offset="0.5" stop-color="#c2c7ce"/><stop offset="1" stop-color="#f4f6f8"/></linearGradient>
+                    <linearGradient id="devGlossG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity="0.6"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+                    <linearGradient id="devLcdG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#a7b2a3"/><stop offset="1" stop-color="#c4cdc0"/></linearGradient>
+                    <clipPath id="devClip"><path d="M74 24 C100 17 140 17 166 24 C190 30 200 48 200 72 L204 188 C206 232 190 262 160 268 C140 272 100 272 80 268 C50 262 34 232 36 188 L40 72 C40 48 50 30 74 24 Z"/></clipPath>
+                </defs>
+                <!-- kayış (parmağa takılan halka) -->
+                <rect x="92" y="4" width="56" height="292" rx="7" fill="url(#devStrapG)" stroke="rgba(0,0,0,0.18)"/>
+                <g id="devStrapDots"></g>
+                <!-- gövde -->
+                <path d="M74 24 C100 17 140 17 166 24 C190 30 200 48 200 72 L204 188 C206 232 190 262 160 268 C140 272 100 272 80 268 C50 262 34 232 36 188 L40 72 C40 48 50 30 74 24 Z" fill="url(#devBodyG)" stroke="rgba(0,0,0,0.38)" stroke-width="1.2"/>
+                <path d="M74 24 C100 17 140 17 166 24 C190 30 200 48 200 72 L204 188 C206 232 190 262 160 268 C140 272 100 272 80 268 C50 262 34 232 36 188 L40 72 C40 48 50 30 74 24 Z" fill="url(#devEdgeG)"/>
+                <path d="M74 24 C100 17 140 17 166 24 C190 30 200 48 200 72 L204 188 C206 232 190 262 160 268 C140 272 100 272 80 268 C50 262 34 232 36 188 L40 72 C40 48 50 30 74 24 Z" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="1.4" transform="translate(120 146) scale(0.95) translate(-120 -146)"/>
+                <g clip-path="url(#devClip)"><ellipse cx="92" cy="50" rx="52" ry="24" fill="url(#devGlossG)" transform="rotate(-10 92 50)" opacity="0.55"/></g>
+                <!-- baskı yazıları -->
+                <text class="dev-ink" id="devTxtTitle" x="120" y="39" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="8" font-weight="700" letter-spacing="0.9" fill="rgba(255,255,255,0.9)">ZİKİRMATİK</text>
+                <!-- LCD -->
+                <rect x="60" y="46" width="120" height="64" rx="9" fill="#14161a" stroke="rgba(255,255,255,0.14)"/>
+                <rect x="67" y="53" width="106" height="50" rx="4" fill="url(#devLcdG)"/>
+                <rect x="67" y="53" width="106" height="50" rx="4" fill="none" stroke="rgba(0,0,0,0.4)" stroke-width="1.5"/>
+                <g id="devDigits" transform="translate(76.75 67.4) skewX(-5) scale(0.82)"></g>
+                <polygon points="67,53 118,53 98,103 67,103" fill="#fff" opacity="0.08"/>
+                <text class="dev-ink" id="devTxtCount" x="92" y="124" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="7.5" font-weight="700" letter-spacing="0.6" fill="rgba(255,255,255,0.9)">SAY</text>
+                <text class="dev-ink" id="devTxtReset" x="158" y="124" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="7.5" font-weight="700" letter-spacing="0.6" fill="rgba(255,255,255,0.9)">SIFIRLA</text>
+                <!-- küçük RESET tuşu -->
+                <circle cx="166" cy="152" r="14" fill="rgba(0,0,0,0.3)" stroke="rgba(255,255,255,0.22)"/>
+                <g id="devResetBtn" style="transform-box: view-box; transform-origin: 0 0; transition: transform 0.12s ease;">
+                    <circle cx="166" cy="152" r="10.5" fill="url(#devChromeG)" stroke="rgba(0,0,0,0.35)"/>
+                    <ellipse cx="162.5" cy="148" rx="3.6" ry="2" fill="#fff" opacity="0.85" transform="rotate(-35 162.5 148)"/>
+                </g>
+                <!-- büyük COUNT tuşu -->
+                <circle cx="112" cy="192" r="42" fill="rgba(0,0,0,0.3)" stroke="rgba(255,255,255,0.22)" stroke-width="1.2"/>
+                <g id="devBtn" style="transform-box: view-box; transform-origin: 0 0;">
+                    <circle cx="112" cy="192" r="35" fill="url(#devChromeG)" stroke="rgba(0,0,0,0.4)"/>
+                    <circle cx="112" cy="192" r="25" fill="url(#devDishG)" stroke="rgba(0,0,0,0.25)"/>
+                    <ellipse cx="101" cy="180" rx="10" ry="5.5" fill="#fff" opacity="0.8" transform="rotate(-35 101 180)"/>
+                    <circle id="devBtnShade" cx="112" cy="192" r="35" fill="#000" opacity="0"/>
+                </g>
+            </svg>
+        </div>
 
         <button type="button" class="click-area" id="clickArea" aria-label="+1" aria-live="polite">
             <div class="counter-value" id="counter">0</div>
@@ -570,32 +630,153 @@
         if (reduceMotion) { rot = rotT; drawBeadScene(); } else startAnim();
     }
 
-    // Tahta/taş tesbih tıkırtısı: kısa gürültü patlaması + alçak tok vuruş
+    // Yumuşak, naif tesbih sesi: gürültüsüz, yavaş atak, kısa ve tatlı bir "tın" (sine + hafif üst ses, alçak geçiren filtre)
     function knock(at, vol) {
-        const sr = audioCtx.sampleRate, len = Math.floor(sr * 0.06), buf = audioCtx.createBuffer(1, len, sr), d = buf.getChannelData(0);
-        for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 4);
-        const src = audioCtx.createBufferSource(), bp = audioCtx.createBiquadFilter(), g = audioCtx.createGain();
-        src.buffer = buf; bp.type = 'bandpass'; bp.frequency.value = 1500 + Math.random() * 700; bp.Q.value = 1.6; g.gain.value = 1.1 * vol;
-        src.connect(bp); bp.connect(g); g.connect(audioCtx.destination); src.start(at);
-        const o = audioCtx.createOscillator(), og = audioCtx.createGain(), f0 = 260 + Math.random() * 60;
-        o.type = 'sine'; o.frequency.setValueAtTime(f0, at); o.frequency.exponentialRampToValueAtTime(f0 * 0.5, at + 0.07);
-        og.gain.setValueAtTime(0.35 * vol, at); og.gain.exponentialRampToValueAtTime(0.0001, at + 0.08);
-        o.connect(og); og.connect(audioCtx.destination); o.start(at); o.stop(at + 0.09);
+        const f0 = 540 + Math.random() * 50;
+        const lp = audioCtx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 2200; lp.Q.value = 0.4;
+        lp.connect(audioCtx.destination);
+        [[f0, 0.16, 0.2], [f0 * 1.5, 0.05, 0.12]].forEach(([f, g, dec]) => {
+            const o = audioCtx.createOscillator(), v = audioCtx.createGain();
+            o.type = 'sine'; o.frequency.setValueAtTime(f, at); o.frequency.exponentialRampToValueAtTime(f * 0.97, at + dec);
+            v.gain.setValueAtTime(0.0001, at); v.gain.linearRampToValueAtTime(g * vol, at + 0.008); v.gain.exponentialRampToValueAtTime(0.0001, at + dec);
+            o.connect(v); v.connect(lp); o.start(at); o.stop(at + dec + 0.02);
+        });
     }
     function playBeadClick(done) {
         if (!soundOn) return;
         try {
             if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
             if (audioCtx.state === 'suspended') audioCtx.resume();
-            const now = audioCtx.currentTime; knock(now, 1); if (done) knock(now + 0.11, 0.8);
+            const now = audioCtx.currentTime; knock(now, 1); if (done) knock(now + 0.14, 0.75);
         } catch (e) { console.log('Ses yürütülemedi:', e); }
     }
 
-    // --- Parmak modu ---
+    // --- Parmak modu: gerçekçi parmak sayacı (tally counter) ---
+    let resetTimer = 0;
+    function inResetZone(e) {
+        if (mode !== 'finger' || (!e.clientX && !e.clientY)) return false;   // klavye tıklaması (0,0) sayılır
+        const r = stage.getBoundingClientRect(), k = r.width / 300;
+        return Math.hypot((e.clientX - r.left) / k - 196, (e.clientY - r.top) / k - 152) <= 20;
+    }
+    function holdReset() {
+        if (count === 0) return;
+        count = 0; store.set('zikir_count', 0); beadReset(); haptic([40, 30, 40]); updateDisplay();
+    }
+    const DEV_DIGITS = 6;
+    const DEV_COLORS = {
+        red:       { hi: '#ff7a6e', mid: '#d9291f', lo: '#7a0e0a', ink: 'rgba(255,255,255,0.9)' },
+        orange:    { hi: '#ffc460', mid: '#f08a0c', lo: '#9c4d04', ink: 'rgba(40,20,0,0.85)' },
+        yellow:    { hi: '#fff58a', mid: '#f1cb10', lo: '#8f7403', ink: 'rgba(40,30,0,0.85)' },
+        lime:      { hi: '#d2ff86', mid: '#5fd01f', lo: '#2b7f09', ink: 'rgba(10,40,0,0.85)' },
+        green:     { hi: '#56c98f', mid: '#128a52', lo: '#06402a', ink: 'rgba(255,255,255,0.9)' },
+        blue:      { hi: '#6384ff', mid: '#1a35c9', lo: '#0a1865', ink: 'rgba(255,255,255,0.9)' },
+        lightblue: { hi: '#e2f1ff', mid: '#92c2e8', lo: '#4a7ba5', ink: 'rgba(10,30,50,0.85)' },
+        pink:      { hi: '#ffa6d8', mid: '#ec3c9c', lo: '#94135f', ink: 'rgba(255,255,255,0.92)' }
+    };
+    const DEV_NAMES = {
+        tr: { red: 'Kırmızı', orange: 'Turuncu', yellow: 'Sarı', lime: 'Açık yeşil', green: 'Yeşil', blue: 'Mavi', lightblue: 'Açık mavi', pink: 'Pembe' },
+        en: { red: 'Red', orange: 'Orange', yellow: 'Yellow', lime: 'Lime', green: 'Green', blue: 'Blue', lightblue: 'Light blue', pink: 'Pink' },
+        ar: { red: 'أحمر', orange: 'برتقالي', yellow: 'أصفر', lime: 'أخضر فاتح', green: 'أخضر', blue: 'أزرق', lightblue: 'أزرق فاتح', pink: 'وردي' }
+    };
+    const DEV_LABELS = {
+        tr: { title: 'ZİKİRMATİK', count: 'SAY', reset: 'SIFIRLA' },
+        en: { title: 'TALLY COUNTER', count: 'COUNT', reset: 'RESET' },
+        ar: { title: 'عداد التسبيح', count: 'عدّ', reset: 'تصفير' }
+    };
+    let devColor = DEV_COLORS[localStorage.getItem('zikir_device')] ? localStorage.getItem('zikir_device') : 'red';
+    const poly = pts => 'M' + pts.map(q => q.join(' ')).join(' L') + ' Z';
+    const SEGPATH = {
+        a: poly([[2.2, 1.5], [3.7, 0], [10.3, 0], [11.8, 1.5], [10.3, 3], [3.7, 3]]),
+        g: poly([[2.2, 13], [3.7, 11.5], [10.3, 11.5], [11.8, 13], [10.3, 14.5], [3.7, 14.5]]),
+        d: poly([[2.2, 24.5], [3.7, 23], [10.3, 23], [11.8, 24.5], [10.3, 26], [3.7, 26]]),
+        f: poly([[0, 3.7], [1.5, 2.2], [3, 3.7], [3, 10.8], [1.5, 12.3], [0, 10.8]]),
+        b: poly([[11, 3.7], [12.5, 2.2], [14, 3.7], [14, 10.8], [12.5, 12.3], [11, 10.8]]),
+        e: poly([[0, 15.2], [1.5, 13.7], [3, 15.2], [3, 22.3], [1.5, 23.8], [0, 22.3]]),
+        c: poly([[11, 15.2], [12.5, 13.7], [14, 15.2], [14, 22.3], [12.5, 23.8], [11, 22.3]])
+    };
+    const DIGIT_SEGS = ['abcdef', 'bc', 'abdeg', 'abcdg', 'bcfg', 'acdfg', 'acdefg', 'abc', 'abcdefg', 'abcdfg'];
+    let devLit = [];
+    const SVGNS = 'http://www.w3.org/2000/svg';
+
+    function buildDevice() {
+        const dots = document.getElementById('devStrapDots'), box = document.getElementById('devDigits');
+        if (!dots || !box) return;
+        dots.textContent = ''; box.textContent = ''; devLit = [];
+        for (let y = 16; y < 296; y += 22) [105, 135].forEach(x => {
+            const c = document.createElementNS(SVGNS, 'circle');
+            c.setAttribute('cx', x); c.setAttribute('cy', y); c.setAttribute('r', 2.6);
+            c.setAttribute('fill', 'rgba(0,0,0,0.06)'); c.setAttribute('stroke', 'rgba(255,255,255,0.9)'); c.setAttribute('stroke-width', 0.8);
+            dots.appendChild(c);
+        });
+        const all = 'abcdefg'.split('').map(k => SEGPATH[k]).join(' ');
+        for (let i = 0; i < DEV_DIGITS; i++) {
+            const g = document.createElementNS(SVGNS, 'g'); g.setAttribute('transform', `translate(${i * 18.27} 0)`);
+            const ghost = document.createElementNS(SVGNS, 'path'); ghost.setAttribute('d', all); ghost.setAttribute('fill', 'rgba(20,30,20,0.07)');
+            const lit = document.createElementNS(SVGNS, 'path'); lit.setAttribute('fill', '#141a13');
+            g.append(ghost, lit); box.appendChild(g); devLit.push(lit);
+        }
+        applyDevColor(); paintDevice();
+    }
+    function applyDevColor() {
+        const c = DEV_COLORS[devColor];
+        ['hi', 'mid', 'lo'].forEach((k, i) => { const st = document.getElementById('dg' + i); if (st) st.setAttribute('stop-color', c[k]); });
+        document.querySelectorAll('.dev-ink').forEach(el => el.setAttribute('fill', c.ink));
+        const L = DEV_LABELS[activeLang] || DEV_LABELS.tr;
+        [['devTxtTitle', L.title], ['devTxtCount', L.count], ['devTxtReset', L.reset]].forEach(([id, txt]) => {
+            const el = document.getElementById(id); if (!el) return;
+            el.textContent = txt; el.setAttribute('letter-spacing', activeLang === 'ar' ? '0' : (id === 'devTxtTitle' ? '0.9' : '0.6'));
+        });
+    }
+    function paintDevice() {
+        if (!devLit.length) return;
+        const str = String(loopValue(count, target)).slice(-DEV_DIGITS), off = DEV_DIGITS - str.length;
+        devLit.forEach((p, i) => {
+            const ch = i >= off ? str[i - off] : null;
+            p.setAttribute('d', ch === null ? '' : DIGIT_SEGS[+ch].split('').map(k => SEGPATH[k]).join(' '));
+        });
+    }
+    function buildDevicePicker() {
+        const box = document.getElementById('devicePicker'); box.textContent = '';
+        const names = DEV_NAMES[activeLang] || DEV_NAMES.tr;
+        Object.keys(DEV_COLORS).forEach(k => {
+            const m = DEV_COLORS[k], b = document.createElement('button');
+            b.type = 'button'; b.className = 'bead-sw' + (k === devColor ? ' active' : ''); b.dataset.col = k;
+            b.title = names[k] || k; b.setAttribute('aria-label', b.title);
+            b.style.background = `radial-gradient(circle at 32% 30%, ${m.hi}, ${m.mid} 45%, ${m.lo})`;
+            b.addEventListener('click', () => {
+                devColor = k; store.set('zikir_device', k);
+                box.querySelectorAll('.bead-sw').forEach(x => x.classList.toggle('active', x.dataset.col === k));
+                applyDevColor();
+            });
+            box.appendChild(b);
+        });
+    }
+    // Plastik "tık": kısa, keskin; hedef dolunca çift tık
+    function playTallyClick(done) {
+        if (!soundOn) return;
+        try {
+            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            const tick = (at, f, g) => {
+                const o = audioCtx.createOscillator(), v = audioCtx.createGain();
+                o.type = 'square'; o.frequency.setValueAtTime(f, at); o.frequency.exponentialRampToValueAtTime(f * 0.55, at + 0.03);
+                v.gain.setValueAtTime(g, at); v.gain.exponentialRampToValueAtTime(0.0001, at + 0.035);
+                o.connect(v); v.connect(audioCtx.destination); o.start(at); o.stop(at + 0.04);
+            };
+            const now = audioCtx.currentTime;
+            tick(now, 2600, 0.07); tick(now + 0.012, 1100, 0.05);
+            if (done) { tick(now + 0.14, 2600, 0.07); tick(now + 0.152, 1100, 0.05); }
+        } catch (e) { console.log('Ses yürütülemedi:', e); }
+    }
     function fingerTap() {
+        // Metal COUNT tuşu çöker
+        const btn = document.getElementById('devBtn'), shade = document.getElementById('devBtnShade');
+        const bt = sc => `translate(112px, 192px) scale(${sc}) translate(-112px, -192px)`;
+        if (btn && btn.animate) btn.animate([{ transform: bt(1) }, { transform: bt(0.9), offset: 0.4 }, { transform: bt(1) }], { duration: 170, easing: 'ease-out' });
+        if (shade && shade.animate) shade.animate([{ opacity: 0 }, { opacity: 0.3, offset: 0.4 }, { opacity: 0 }], { duration: 170, easing: 'ease-out' });
         if (!fingerEl || !fingerEl.animate) return;
-        const idle = 'rotate(-28deg) scale(1.1) translateY(10px)', press = 'rotate(-28deg) scale(0.98) translateY(-3px)';
-        const shIdle = 'drop-shadow(10px 14px 9px rgba(0,0,0,0.28))', shPress = 'drop-shadow(3px 4px 3px rgba(0,0,0,0.42))';
+        const idle = 'rotate(-28deg) scale(0.92) translateY(12px)', press = 'rotate(-28deg) scale(0.82) translateY(-6px)';
+        const shIdle = 'drop-shadow(8px 12px 8px rgba(0,0,0,0.30))', shPress = 'drop-shadow(2px 3px 3px rgba(0,0,0,0.45))';
         fingerEl.animate([{ transform: idle, filter: shIdle }, { transform: press, filter: shPress, offset: 0.4 }, { transform: idle, filter: shIdle }], { duration: 170, easing: 'ease-out' });
         if (reduceMotion) return;
         const r = document.createElement('div'); r.className = 'tap-ripple'; document.getElementById('fingerLayer').appendChild(r);
@@ -608,6 +789,7 @@
         mode = MODES.includes(m) ? m : 'classic'; store.set('zikir_mode', mode);
         stage.classList.toggle('mode-finger', mode === 'finger'); stage.classList.toggle('mode-bead', mode === 'bead');
         document.getElementById('beadPicker').style.display = mode === 'bead' ? 'flex' : 'none';
+        document.getElementById('devicePicker').style.display = mode === 'finger' ? 'flex' : 'none';
         document.querySelectorAll('.mode-item').forEach(el => el.classList.toggle('active', el.dataset.mode === mode));
         if (mode === 'bead') { resizeBeadCanvas(); rot = rotT; sway = swayV = 0; drawBeadScene(); }
     }
@@ -658,7 +840,7 @@
         remainderLabelEl.append(`${t.remainder_text}${target - v}`, document.createElement('br'),
             `${t.rounds_text}${roundsDone(count, target)} • ${t.total_text}${count}`);
         clickAreaEl.classList.toggle('done', count > 0 && v === target);
-        paintBeads();
+        paintBeads(); paintDevice();
         document.querySelectorAll('.sweet-dhikr-item').forEach(el => el.classList.toggle('active', parseInt(el.dataset.idx, 10) === activeDhikr));
     }
 
@@ -696,12 +878,12 @@
         store.set('zikir_count', count);
         const completed = loopValue(count, target) === target;
         if (completed) {
-            if (mode === 'bead') playBeadClick(true); else playClickSound(880, 0.25);
+            if (mode === 'bead') playBeadClick(true); else if (mode === 'finger') playTallyClick(true); else playClickSound(880, 0.25);
             haptic([80, 50, 80]);
             // Tesbihat: üç zikirden biri seçiliyse hedef dolunca sıradakine geç
             if (activeDhikr >= 0) { activeDhikr = (activeDhikr + 1) % 3; store.set('zikir_active', activeDhikr); }
         } else {
-            if (mode === 'bead') playBeadClick(false); else playClickSound(650, 0.06);
+            if (mode === 'bead') playBeadClick(false); else if (mode === 'finger') playTallyClick(false); else playClickSound(650, 0.06);
             haptic(12);
         }
         if (mode === 'finger') fingerTap();
@@ -735,7 +917,18 @@
         updateThemeButton(); updateThemeColor(); updateToolButtons();
 
         // Klasik modda yalnızca ortadaki düğme sayar; parmak ve tesbih modunda sahnenin her yerine dokunmak sayar
-        stage.addEventListener('click', e => { if (mode === 'classic' && !e.target.closest('#clickArea')) return; increment(); });
+        stage.addEventListener('click', e => { if (mode === 'classic' && !e.target.closest('#clickArea')) return; if (inResetZone(e)) return; increment(); });
+        // Parmak modunda küçük tuşa (RESET) ~0,8 sn basılı tutunca sayaç sıfırlanır; kısa dokunuş saymaz
+        const rb = document.getElementById('devResetBtn');
+        const rbT = sc => `translate(166px, 152px) scale(${sc}) translate(-166px, -152px)`;
+        const rbRelease = () => { clearTimeout(resetTimer); resetTimer = 0; if (rb) rb.style.transform = rbT(1); };
+        stage.addEventListener('pointerdown', e => {
+            if (!inResetZone(e)) return;
+            if (rb) rb.style.transform = rbT(0.82);
+            clearTimeout(resetTimer);
+            resetTimer = setTimeout(() => { resetTimer = 0; holdReset(); if (rb) rb.style.transform = rbT(1); }, 800);
+        });
+        ['pointerup', 'pointercancel', 'pointerleave'].forEach(ev => stage.addEventListener(ev, rbRelease));
         document.getElementById('modeBar').addEventListener('click', e => { const b = e.target.closest('.mode-item'); if (b) setMode(b.dataset.mode); });
         window.addEventListener('resize', () => { if (mode === 'bead') { resizeBeadCanvas(); drawBeadScene(); } });
         clickAreaEl.addEventListener('mousedown', triggerPressEffect);
@@ -750,7 +943,7 @@
         });
         document.addEventListener('visibilitychange', () => { if (!document.hidden && count > 0) keepAwake(); });
 
-        buildBeads(); buildBeadPicker(); updateActiveButtonStates(); updateDisplay(); setMode(mode);
+        buildBeads(); buildBeadPicker(); buildDevicePicker(); buildDevice(); updateActiveButtonStates(); updateDisplay(); setMode(mode);
     };
 </script>
 
